@@ -1,0 +1,697 @@
+
+---
+events:
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/CMakeDetermineSystem.cmake:204 (message)"
+      - "CMakeLists.txt:2 (project)"
+    message: |
+      The system is: Linux - 5.14.0-427.91.1.el9_4.x86_64 - x86_64
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "/usr/share/cmake/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "/usr/share/cmake/Modules/CMakeDetermineCCompiler.cmake:123 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:2 (project)"
+    message: |
+      Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
+      Compiler: /opt/cray/pe/craype/2.7.34/bin/cc 
+      Build flags: 
+      Id flags:  
+      
+      The output was:
+      0
+      
+      
+      Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "a.out"
+      
+      The C compiler identification is GNU, found in:
+        /u/ajain18/jacobi2d/build/CMakeFiles/3.26.5/CompilerIdC/a.out
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "/usr/share/cmake/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "/usr/share/cmake/Modules/CMakeDetermineCXXCompiler.cmake:126 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:2 (project)"
+    message: |
+      Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+      Compiler: /opt/cray/pe/craype/2.7.34/bin/CC 
+      Build flags: 
+      Id flags:  
+      
+      The output was:
+      0
+      
+      
+      Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "a.out"
+      
+      The CXX compiler identification is GNU, found in:
+        /u/ajain18/jacobi2d/build/CMakeFiles/3.26.5/CompilerIdCXX/a.out
+      
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/CMakeDetermineCompilerABI.cmake:57 (try_compile)"
+      - "/usr/share/cmake/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:2 (project)"
+    checks:
+      - "Detecting C compiler ABI info"
+    directories:
+      source: "/u/ajain18/jacobi2d/build/CMakeFiles/CMakeScratch/TryCompile-KxlQRY"
+      binary: "/u/ajain18/jacobi2d/build/CMakeFiles/CMakeScratch/TryCompile-KxlQRY"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+    buildResult:
+      variable: "CMAKE_C_ABI_COMPILED"
+      cached: true
+      stdout: |
+        Change Dir: /u/ajain18/jacobi2d/build/CMakeFiles/CMakeScratch/TryCompile-KxlQRY
+        
+        Run Build Command(s):/usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_f2577/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_f2577.dir/build.make CMakeFiles/cmTC_f2577.dir/build
+        gmake[1]: Entering directory '/u/ajain18/jacobi2d/build/CMakeFiles/CMakeScratch/TryCompile-KxlQRY'
+        Building C object CMakeFiles/cmTC_f2577.dir/CMakeCCompilerABI.c.o
+        /opt/cray/pe/craype/2.7.34/bin/cc   -v -o CMakeFiles/cmTC_f2577.dir/CMakeCCompilerABI.c.o -c /usr/share/cmake/Modules/CMakeCCompilerABI.c
+        Using built-in specs.
+        COLLECT_GCC=gcc
+        OFFLOAD_TARGET_NAMES=nvptx-none
+        OFFLOAD_TARGET_DEFAULT=1
+        Target: x86_64-redhat-linux
+        Configured with: ../configure --enable-bootstrap --enable-languages=c,c++,fortran,lto --prefix=/opt/rh/gcc-toolset-13/root/usr --mandir=/opt/rh/gcc-toolset-13/root/usr/share/man --infodir=/opt/rh/gcc-toolset-13/root/usr/share/info --with-bugurl=http://bugzilla.redhat.com/bugzilla --enable-shared --enable-threads=posix --enable-checking=release --enable-multilib --with-system-zlib --enable-__cxa_atexit --disable-libunwind-exceptions --enable-gnu-unique-object --enable-linker-build-id --with-gcc-major-version-only --enable-libstdcxx-backtrace --with-libstdcxx-zoneinfo=/usr/share/zoneinfo --with-linker-hash-style=gnu --enable-plugin --enable-initfini-array --without-isl --enable-offload-targets=nvptx-none --without-cuda-driver --enable-offload-defaulted --enable-gnu-indirect-function --enable-cet --with-tune=generic --with-arch_64=x86-64-v2 --with-arch_32=x86-64 --build=x86_64-redhat-linux --with-build-config=bootstrap-lto --enable-link-serialization=1
+        Thread model: posix
+        Supported LTO compression algorithms: zlib zstd
+        gcc version 13.3.1 20240611 (Red Hat 13.3.1-2) (GCC) 
+        COLLECT_GCC_OPTIONS='-march=znver3' '-D' '__CRAY_X86_MILAN' '-D' '__CRAY_NVIDIA80' '-D' '__CRAYXT_COMPUTE_LINUX_TARGET' '-D' '__TARGET_LINUX__' '-v' '-o' 'CMakeFiles/cmTC_f2577.dir/CMakeCCompilerABI.c.o' '-c' '-I' '/opt/cray/pe/dsmml/0.3.1/dsmml/include' '-I' '/opt/cray/pe/libsci/25.03.0/GNU/12.2/x86_64/include' '-I' '/opt/cray/pe/mpich/8.1.32/ofi/gnu/11.2/include' '-dumpdir' 'CMakeFiles/cmTC_f2577.dir/'
+         /opt/rh/gcc-toolset-13/root/usr/libexec/gcc/x86_64-redhat-linux/13/cc1 -quiet -v -I /opt/cray/pe/dsmml/0.3.1/dsmml/include -I /opt/cray/pe/libsci/25.03.0/GNU/12.2/x86_64/include -I /opt/cray/pe/mpich/8.1.32/ofi/gnu/11.2/include -D __CRAY_X86_MILAN -D __CRAY_NVIDIA80 -D __CRAYXT_COMPUTE_LINUX_TARGET -D __TARGET_LINUX__ /usr/share/cmake/Modules/CMakeCCompilerABI.c -quiet -dumpdir CMakeFiles/cmTC_f2577.dir/ -dumpbase CMakeCCompilerABI.c.c -dumpbase-ext .c -march=znver3 -version -o /tmp/cch2JdJg.s
+        GNU C17 (GCC) version 13.3.1 20240611 (Red Hat 13.3.1-2) (x86_64-redhat-linux)
+        	compiled by GNU C version 13.3.1 20240611 (Red Hat 13.3.1-2), GMP version 6.2.0, MPFR version 4.1.0-p9, MPC version 1.2.1, isl version none
+        GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+        ignoring nonexistent directory "/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/include-fixed"
+        ignoring nonexistent directory "/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/../../../../x86_64-redhat-linux/include"
+        #include "..." search starts here:
+        #include <...> search starts here:
+         /opt/cray/pe/dsmml/0.3.1/dsmml/include
+         /opt/cray/pe/libsci/25.03.0/GNU/12.2/x86_64/include
+         /opt/cray/pe/mpich/8.1.32/ofi/gnu/11.2/include
+         /opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/include
+         /opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/nvvm/include
+         /opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/extras/Debugger/include
+         /opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/extras/CUPTI/include
+         /opt/nvidia/hpc_sdk/Linux_x86_64/25.3/math_libs/12.8/include
+         /opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/include
+         /usr/local/include
+         /opt/rh/gcc-toolset-13/root/usr/include
+         /usr/include
+        End of search list.
+        Compiler executable checksum: 76b2a27bae41b3f402e3af18efc6330d
+        COLLECT_GCC_OPTIONS='-march=znver3' '-D' '__CRAY_X86_MILAN' '-D' '__CRAY_NVIDIA80' '-D' '__CRAYXT_COMPUTE_LINUX_TARGET' '-D' '__TARGET_LINUX__' '-v' '-o' 'CMakeFiles/cmTC_f2577.dir/CMakeCCompilerABI.c.o' '-c' '-I' '/opt/cray/pe/dsmml/0.3.1/dsmml/include' '-I' '/opt/cray/pe/libsci/25.03.0/GNU/12.2/x86_64/include' '-I' '/opt/cray/pe/mpich/8.1.32/ofi/gnu/11.2/include' '-dumpdir' 'CMakeFiles/cmTC_f2577.dir/'
+         /opt/rh/gcc-toolset-13/root/usr/libexec/gcc/x86_64-redhat-linux/13/as -v -I /opt/cray/pe/dsmml/0.3.1/dsmml/include -I /opt/cray/pe/libsci/25.03.0/GNU/12.2/x86_64/include -I /opt/cray/pe/mpich/8.1.32/ofi/gnu/11.2/include --64 -o CMakeFiles/cmTC_f2577.dir/CMakeCCompilerABI.c.o /tmp/cch2JdJg.s
+        GNU assembler version 2.40 (x86_64-redhat-linux) using BFD version version 2.40-21.el9
+        COMPILER_PATH=/opt/rh/gcc-toolset-13/root/usr/libexec/gcc/x86_64-redhat-linux/13/:/opt/rh/gcc-toolset-13/root/usr/libexec/gcc/x86_64-redhat-linux/13/:/opt/rh/gcc-toolset-13/root/usr/libexec/gcc/x86_64-redhat-linux/:/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/:/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/
+        LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/:/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/../../../../lib64/:/lib/../lib64/:/usr/lib/../lib64/:/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/../../../:/lib/:/usr/lib/
+        COLLECT_GCC_OPTIONS='-march=znver3' '-D' '__CRAY_X86_MILAN' '-D' '__CRAY_NVIDIA80' '-D' '__CRAYXT_COMPUTE_LINUX_TARGET' '-D' '__TARGET_LINUX__' '-v' '-o' 'CMakeFiles/cmTC_f2577.dir/CMakeCCompilerABI.c.o' '-c' '-I' '/opt/cray/pe/dsmml/0.3.1/dsmml/include' '-I' '/opt/cray/pe/libsci/25.03.0/GNU/12.2/x86_64/include' '-I' '/opt/cray/pe/mpich/8.1.32/ofi/gnu/11.2/include' '-dumpdir' 'CMakeFiles/cmTC_f2577.dir/CMakeCCompilerABI.c.'
+        Linking C executable cmTC_f2577
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_f2577.dir/link.txt --verbose=1
+        /opt/cray/pe/craype/2.7.34/bin/cc  -v CMakeFiles/cmTC_f2577.dir/CMakeCCompilerABI.c.o -o cmTC_f2577 
+        Using built-in specs.
+        COLLECT_GCC=gcc
+        COLLECT_LTO_WRAPPER=/opt/rh/gcc-toolset-13/root/usr/libexec/gcc/x86_64-redhat-linux/13/lto-wrapper
+        OFFLOAD_TARGET_NAMES=nvptx-none
+        OFFLOAD_TARGET_DEFAULT=1
+        Target: x86_64-redhat-linux
+        Configured with: ../configure --enable-bootstrap --enable-languages=c,c++,fortran,lto --prefix=/opt/rh/gcc-toolset-13/root/usr --mandir=/opt/rh/gcc-toolset-13/root/usr/share/man --infodir=/opt/rh/gcc-toolset-13/root/usr/share/info --with-bugurl=http://bugzilla.redhat.com/bugzilla --enable-shared --enable-threads=posix --enable-checking=release --enable-multilib --with-system-zlib --enable-__cxa_atexit --disable-libunwind-exceptions --enable-gnu-unique-object --enable-linker-build-id --with-gcc-major-version-only --enable-libstdcxx-backtrace --with-libstdcxx-zoneinfo=/usr/share/zoneinfo --with-linker-hash-style=gnu --enable-plugin --enable-initfini-array --without-isl --enable-offload-targets=nvptx-none --without-cuda-driver --enable-offload-defaulted --enable-gnu-indirect-function --enable-cet --with-tune=generic --with-arch_64=x86-64-v2 --with-arch_32=x86-64 --build=x86_64-redhat-linux --with-build-config=bootstrap-lto --enable-link-serialization=1
+        Thread model: posix
+        Supported LTO compression algorithms: zlib zstd
+        gcc version 13.3.1 20240611 (Red Hat 13.3.1-2) (GCC) 
+        COMPILER_PATH=/opt/rh/gcc-toolset-13/root/usr/libexec/gcc/x86_64-redhat-linux/13/:/opt/rh/gcc-toolset-13/root/usr/libexec/gcc/x86_64-redhat-linux/13/:/opt/rh/gcc-toolset-13/root/usr/libexec/gcc/x86_64-redhat-linux/:/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/:/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/
+        LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/:/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/../../../../lib64/:/lib/../lib64/:/usr/lib/../lib64/:/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/../../../:/lib/:/usr/lib/
+        COLLECT_GCC_OPTIONS='-march=znver3' '-D' '__CRAY_X86_MILAN' '-D' '__CRAY_NVIDIA80' '-D' '__CRAYXT_COMPUTE_LINUX_TARGET' '-D' '__TARGET_LINUX__' '-v' '-o' 'cmTC_f2577' '-I' '/opt/cray/pe/dsmml/0.3.1/dsmml/include' '-I' '/opt/cray/pe/libsci/25.03.0/GNU/12.2/x86_64/include' '-I' '/opt/cray/pe/mpich/8.1.32/ofi/gnu/11.2/include' '-L/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/lib64' '-L/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/nvvm/lib64' '-L/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/extras/CUPTI/lib64' '-L/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/math_libs/12.8/lib64' '-L/opt/cray/pe/dsmml/0.3.1/dsmml/lib' '-L/opt/cray/pe/libsci/25.03.0/GNU/12.2/x86_64/lib' '-L/opt/cray/pe/mpich/8.1.32/ofi/gnu/11.2/lib' '-L/opt/cray/pe/mpich/8.1.32/gtl/lib' '-dumpdir' 'cmTC_f2577.'
+         /opt/rh/gcc-toolset-13/root/usr/libexec/gcc/x86_64-redhat-linux/13/collect2 -plugin /opt/rh/gcc-toolset-13/root/usr/libexec/gcc/x86_64-redhat-linux/13/liblto_plugin.so -plugin-opt=/opt/rh/gcc-toolset-13/root/usr/libexec/gcc/x86_64-redhat-linux/13/lto-wrapper -plugin-opt=-fresolution=/tmp/ccmrbi3d.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --build-id --no-add-needed --eh-frame-hdr --hash-style=gnu -m elf_x86_64 -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o cmTC_f2577 /lib/../lib64/crt1.o /lib/../lib64/crti.o /opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/crtbegin.o -L/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/lib64 -L/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/nvvm/lib64 -L/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/extras/CUPTI/lib64 -L/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/math_libs/12.8/lib64 -L/opt/cray/pe/dsmml/0.3.1/dsmml/lib -L/opt/cray/pe/libsci/25.03.0/GNU/12.2/x86_64/lib -L/opt/cray/pe/mpich/8.1.32/ofi/gnu/11.2/lib -L/opt/cray/pe/mpich/8.1.32/gtl/lib -L/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13 -L/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/../../../../lib64 -L/lib/../lib64 -L/usr/lib/../lib64 -L/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/../../.. CMakeFiles/cmTC_f2577.dir/CMakeCCompilerABI.c.o -Bdynamic --as-needed -lcupti -lcudart --no-as-needed -lcuda --as-needed -ldsmml --no-as-needed --as-needed -lsci_gnu_mpi --no-as-needed -lmpi_gtl_cuda --as-needed -lsci_gnu --no-as-needed -ldl --as-needed -lmpi_gnu_112 --no-as-needed -lmpi_gtl_cuda --as-needed -lgfortran -lquadmath --no-as-needed --as-needed -lmvec --no-as-needed --as-needed -lm --no-as-needed --as-needed -lpthread --no-as-needed --disable-new-dtags -lgcc --push-state --as-needed -lgcc_s --pop-state -lc -lgcc --push-state --as-needed -lgcc_s --pop-state /opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/crtend.o /lib/../lib64/crtn.o
+        COLLECT_GCC_OPTIONS='-march=znver3' '-D' '__CRAY_X86_MILAN' '-D' '__CRAY_NVIDIA80' '-D' '__CRAYXT_COMPUTE_LINUX_TARGET' '-D' '__TARGET_LINUX__' '-v' '-o' 'cmTC_f2577' '-I' '/opt/cray/pe/dsmml/0.3.1/dsmml/include' '-I' '/opt/cray/pe/libsci/25.03.0/GNU/12.2/x86_64/include' '-I' '/opt/cray/pe/mpich/8.1.32/ofi/gnu/11.2/include' '-L/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/lib64' '-L/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/nvvm/lib64' '-L/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/extras/CUPTI/lib64' '-L/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/math_libs/12.8/lib64' '-L/opt/cray/pe/dsmml/0.3.1/dsmml/lib' '-L/opt/cray/pe/libsci/25.03.0/GNU/12.2/x86_64/lib' '-L/opt/cray/pe/mpich/8.1.32/ofi/gnu/11.2/lib' '-L/opt/cray/pe/mpich/8.1.32/gtl/lib' '-dumpdir' 'cmTC_f2577.'
+        gmake[1]: Leaving directory '/u/ajain18/jacobi2d/build/CMakeFiles/CMakeScratch/TryCompile-KxlQRY'
+        
+      exitCode: 0
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/CMakeDetermineCompilerABI.cmake:127 (message)"
+      - "/usr/share/cmake/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:2 (project)"
+    message: |
+      Parsed C implicit include dir info: rv=done
+        found start of include info
+        found start of implicit include info
+          add: [/opt/cray/pe/dsmml/0.3.1/dsmml/include]
+          add: [/opt/cray/pe/libsci/25.03.0/GNU/12.2/x86_64/include]
+          add: [/opt/cray/pe/mpich/8.1.32/ofi/gnu/11.2/include]
+          add: [/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/include]
+          add: [/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/nvvm/include]
+          add: [/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/extras/Debugger/include]
+          add: [/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/extras/CUPTI/include]
+          add: [/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/math_libs/12.8/include]
+          add: [/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/include]
+          add: [/usr/local/include]
+          add: [/opt/rh/gcc-toolset-13/root/usr/include]
+          add: [/usr/include]
+        end of search list found
+        collapse include dir [/opt/cray/pe/dsmml/0.3.1/dsmml/include] ==> [/opt/cray/pe/dsmml/0.3.1/dsmml/include]
+        collapse include dir [/opt/cray/pe/libsci/25.03.0/GNU/12.2/x86_64/include] ==> [/opt/cray/pe/libsci/25.03.0/GNU/12.2/x86_64/include]
+        collapse include dir [/opt/cray/pe/mpich/8.1.32/ofi/gnu/11.2/include] ==> [/opt/cray/pe/mpich/8.1.32/ofi/gnu/11.2/include]
+        collapse include dir [/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/include] ==> [/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/include]
+        collapse include dir [/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/nvvm/include] ==> [/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/nvvm/include]
+        collapse include dir [/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/extras/Debugger/include] ==> [/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/extras/Debugger/include]
+        collapse include dir [/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/extras/CUPTI/include] ==> [/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/extras/CUPTI/include]
+        collapse include dir [/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/math_libs/12.8/include] ==> [/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/math_libs/12.8/include]
+        collapse include dir [/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/include] ==> [/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/include]
+        collapse include dir [/usr/local/include] ==> [/usr/local/include]
+        collapse include dir [/opt/rh/gcc-toolset-13/root/usr/include] ==> [/opt/rh/gcc-toolset-13/root/usr/include]
+        collapse include dir [/usr/include] ==> [/usr/include]
+        implicit include dirs: [/opt/cray/pe/dsmml/0.3.1/dsmml/include;/opt/cray/pe/libsci/25.03.0/GNU/12.2/x86_64/include;/opt/cray/pe/mpich/8.1.32/ofi/gnu/11.2/include;/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/include;/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/nvvm/include;/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/extras/Debugger/include;/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/extras/CUPTI/include;/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/math_libs/12.8/include;/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/include;/usr/local/include;/opt/rh/gcc-toolset-13/root/usr/include;/usr/include]
+      
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/CMakeDetermineCompilerABI.cmake:152 (message)"
+      - "/usr/share/cmake/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:2 (project)"
+    message: |
+      Parsed C implicit link information:
+        link line regex: [^( *|.*[/\\])(ld|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\\]+-)?ld|collect2)[^/\\]*( |$)]
+        ignore line: [Change Dir: /u/ajain18/jacobi2d/build/CMakeFiles/CMakeScratch/TryCompile-KxlQRY]
+        ignore line: []
+        ignore line: [Run Build Command(s):/usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_f2577/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_f2577.dir/build.make CMakeFiles/cmTC_f2577.dir/build]
+        ignore line: [gmake[1]: Entering directory '/u/ajain18/jacobi2d/build/CMakeFiles/CMakeScratch/TryCompile-KxlQRY']
+        ignore line: [Building C object CMakeFiles/cmTC_f2577.dir/CMakeCCompilerABI.c.o]
+        ignore line: [/opt/cray/pe/craype/2.7.34/bin/cc   -v -o CMakeFiles/cmTC_f2577.dir/CMakeCCompilerABI.c.o -c /usr/share/cmake/Modules/CMakeCCompilerABI.c]
+        ignore line: [Using built-in specs.]
+        ignore line: [COLLECT_GCC=gcc]
+        ignore line: [OFFLOAD_TARGET_NAMES=nvptx-none]
+        ignore line: [OFFLOAD_TARGET_DEFAULT=1]
+        ignore line: [Target: x86_64-redhat-linux]
+        ignore line: [Configured with: ../configure --enable-bootstrap --enable-languages=c c++ fortran lto --prefix=/opt/rh/gcc-toolset-13/root/usr --mandir=/opt/rh/gcc-toolset-13/root/usr/share/man --infodir=/opt/rh/gcc-toolset-13/root/usr/share/info --with-bugurl=http://bugzilla.redhat.com/bugzilla --enable-shared --enable-threads=posix --enable-checking=release --enable-multilib --with-system-zlib --enable-__cxa_atexit --disable-libunwind-exceptions --enable-gnu-unique-object --enable-linker-build-id --with-gcc-major-version-only --enable-libstdcxx-backtrace --with-libstdcxx-zoneinfo=/usr/share/zoneinfo --with-linker-hash-style=gnu --enable-plugin --enable-initfini-array --without-isl --enable-offload-targets=nvptx-none --without-cuda-driver --enable-offload-defaulted --enable-gnu-indirect-function --enable-cet --with-tune=generic --with-arch_64=x86-64-v2 --with-arch_32=x86-64 --build=x86_64-redhat-linux --with-build-config=bootstrap-lto --enable-link-serialization=1]
+        ignore line: [Thread model: posix]
+        ignore line: [Supported LTO compression algorithms: zlib zstd]
+        ignore line: [gcc version 13.3.1 20240611 (Red Hat 13.3.1-2) (GCC) ]
+        ignore line: [COLLECT_GCC_OPTIONS='-march=znver3' '-D' '__CRAY_X86_MILAN' '-D' '__CRAY_NVIDIA80' '-D' '__CRAYXT_COMPUTE_LINUX_TARGET' '-D' '__TARGET_LINUX__' '-v' '-o' 'CMakeFiles/cmTC_f2577.dir/CMakeCCompilerABI.c.o' '-c' '-I' '/opt/cray/pe/dsmml/0.3.1/dsmml/include' '-I' '/opt/cray/pe/libsci/25.03.0/GNU/12.2/x86_64/include' '-I' '/opt/cray/pe/mpich/8.1.32/ofi/gnu/11.2/include' '-dumpdir' 'CMakeFiles/cmTC_f2577.dir/']
+        ignore line: [ /opt/rh/gcc-toolset-13/root/usr/libexec/gcc/x86_64-redhat-linux/13/cc1 -quiet -v -I /opt/cray/pe/dsmml/0.3.1/dsmml/include -I /opt/cray/pe/libsci/25.03.0/GNU/12.2/x86_64/include -I /opt/cray/pe/mpich/8.1.32/ofi/gnu/11.2/include -D __CRAY_X86_MILAN -D __CRAY_NVIDIA80 -D __CRAYXT_COMPUTE_LINUX_TARGET -D __TARGET_LINUX__ /usr/share/cmake/Modules/CMakeCCompilerABI.c -quiet -dumpdir CMakeFiles/cmTC_f2577.dir/ -dumpbase CMakeCCompilerABI.c.c -dumpbase-ext .c -march=znver3 -version -o /tmp/cch2JdJg.s]
+        ignore line: [GNU C17 (GCC) version 13.3.1 20240611 (Red Hat 13.3.1-2) (x86_64-redhat-linux)]
+        ignore line: [	compiled by GNU C version 13.3.1 20240611 (Red Hat 13.3.1-2)  GMP version 6.2.0  MPFR version 4.1.0-p9  MPC version 1.2.1  isl version none]
+        ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
+        ignore line: [ignoring nonexistent directory "/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/include-fixed"]
+        ignore line: [ignoring nonexistent directory "/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/../../../../x86_64-redhat-linux/include"]
+        ignore line: [#include "..." search starts here:]
+        ignore line: [#include <...> search starts here:]
+        ignore line: [ /opt/cray/pe/dsmml/0.3.1/dsmml/include]
+        ignore line: [ /opt/cray/pe/libsci/25.03.0/GNU/12.2/x86_64/include]
+        ignore line: [ /opt/cray/pe/mpich/8.1.32/ofi/gnu/11.2/include]
+        ignore line: [ /opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/include]
+        ignore line: [ /opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/nvvm/include]
+        ignore line: [ /opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/extras/Debugger/include]
+        ignore line: [ /opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/extras/CUPTI/include]
+        ignore line: [ /opt/nvidia/hpc_sdk/Linux_x86_64/25.3/math_libs/12.8/include]
+        ignore line: [ /opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/include]
+        ignore line: [ /usr/local/include]
+        ignore line: [ /opt/rh/gcc-toolset-13/root/usr/include]
+        ignore line: [ /usr/include]
+        ignore line: [End of search list.]
+        ignore line: [Compiler executable checksum: 76b2a27bae41b3f402e3af18efc6330d]
+        ignore line: [COLLECT_GCC_OPTIONS='-march=znver3' '-D' '__CRAY_X86_MILAN' '-D' '__CRAY_NVIDIA80' '-D' '__CRAYXT_COMPUTE_LINUX_TARGET' '-D' '__TARGET_LINUX__' '-v' '-o' 'CMakeFiles/cmTC_f2577.dir/CMakeCCompilerABI.c.o' '-c' '-I' '/opt/cray/pe/dsmml/0.3.1/dsmml/include' '-I' '/opt/cray/pe/libsci/25.03.0/GNU/12.2/x86_64/include' '-I' '/opt/cray/pe/mpich/8.1.32/ofi/gnu/11.2/include' '-dumpdir' 'CMakeFiles/cmTC_f2577.dir/']
+        ignore line: [ /opt/rh/gcc-toolset-13/root/usr/libexec/gcc/x86_64-redhat-linux/13/as -v -I /opt/cray/pe/dsmml/0.3.1/dsmml/include -I /opt/cray/pe/libsci/25.03.0/GNU/12.2/x86_64/include -I /opt/cray/pe/mpich/8.1.32/ofi/gnu/11.2/include --64 -o CMakeFiles/cmTC_f2577.dir/CMakeCCompilerABI.c.o /tmp/cch2JdJg.s]
+        ignore line: [GNU assembler version 2.40 (x86_64-redhat-linux) using BFD version version 2.40-21.el9]
+        ignore line: [COMPILER_PATH=/opt/rh/gcc-toolset-13/root/usr/libexec/gcc/x86_64-redhat-linux/13/:/opt/rh/gcc-toolset-13/root/usr/libexec/gcc/x86_64-redhat-linux/13/:/opt/rh/gcc-toolset-13/root/usr/libexec/gcc/x86_64-redhat-linux/:/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/:/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/]
+        ignore line: [LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/:/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/../../../../lib64/:/lib/../lib64/:/usr/lib/../lib64/:/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/../../../:/lib/:/usr/lib/]
+        ignore line: [COLLECT_GCC_OPTIONS='-march=znver3' '-D' '__CRAY_X86_MILAN' '-D' '__CRAY_NVIDIA80' '-D' '__CRAYXT_COMPUTE_LINUX_TARGET' '-D' '__TARGET_LINUX__' '-v' '-o' 'CMakeFiles/cmTC_f2577.dir/CMakeCCompilerABI.c.o' '-c' '-I' '/opt/cray/pe/dsmml/0.3.1/dsmml/include' '-I' '/opt/cray/pe/libsci/25.03.0/GNU/12.2/x86_64/include' '-I' '/opt/cray/pe/mpich/8.1.32/ofi/gnu/11.2/include' '-dumpdir' 'CMakeFiles/cmTC_f2577.dir/CMakeCCompilerABI.c.']
+        ignore line: [Linking C executable cmTC_f2577]
+        ignore line: [/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_f2577.dir/link.txt --verbose=1]
+        ignore line: [/opt/cray/pe/craype/2.7.34/bin/cc  -v CMakeFiles/cmTC_f2577.dir/CMakeCCompilerABI.c.o -o cmTC_f2577 ]
+        ignore line: [Using built-in specs.]
+        ignore line: [COLLECT_GCC=gcc]
+        ignore line: [COLLECT_LTO_WRAPPER=/opt/rh/gcc-toolset-13/root/usr/libexec/gcc/x86_64-redhat-linux/13/lto-wrapper]
+        ignore line: [OFFLOAD_TARGET_NAMES=nvptx-none]
+        ignore line: [OFFLOAD_TARGET_DEFAULT=1]
+        ignore line: [Target: x86_64-redhat-linux]
+        ignore line: [Configured with: ../configure --enable-bootstrap --enable-languages=c c++ fortran lto --prefix=/opt/rh/gcc-toolset-13/root/usr --mandir=/opt/rh/gcc-toolset-13/root/usr/share/man --infodir=/opt/rh/gcc-toolset-13/root/usr/share/info --with-bugurl=http://bugzilla.redhat.com/bugzilla --enable-shared --enable-threads=posix --enable-checking=release --enable-multilib --with-system-zlib --enable-__cxa_atexit --disable-libunwind-exceptions --enable-gnu-unique-object --enable-linker-build-id --with-gcc-major-version-only --enable-libstdcxx-backtrace --with-libstdcxx-zoneinfo=/usr/share/zoneinfo --with-linker-hash-style=gnu --enable-plugin --enable-initfini-array --without-isl --enable-offload-targets=nvptx-none --without-cuda-driver --enable-offload-defaulted --enable-gnu-indirect-function --enable-cet --with-tune=generic --with-arch_64=x86-64-v2 --with-arch_32=x86-64 --build=x86_64-redhat-linux --with-build-config=bootstrap-lto --enable-link-serialization=1]
+        ignore line: [Thread model: posix]
+        ignore line: [Supported LTO compression algorithms: zlib zstd]
+        ignore line: [gcc version 13.3.1 20240611 (Red Hat 13.3.1-2) (GCC) ]
+        ignore line: [COMPILER_PATH=/opt/rh/gcc-toolset-13/root/usr/libexec/gcc/x86_64-redhat-linux/13/:/opt/rh/gcc-toolset-13/root/usr/libexec/gcc/x86_64-redhat-linux/13/:/opt/rh/gcc-toolset-13/root/usr/libexec/gcc/x86_64-redhat-linux/:/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/:/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/]
+        ignore line: [LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/:/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/../../../../lib64/:/lib/../lib64/:/usr/lib/../lib64/:/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/../../../:/lib/:/usr/lib/]
+        ignore line: [COLLECT_GCC_OPTIONS='-march=znver3' '-D' '__CRAY_X86_MILAN' '-D' '__CRAY_NVIDIA80' '-D' '__CRAYXT_COMPUTE_LINUX_TARGET' '-D' '__TARGET_LINUX__' '-v' '-o' 'cmTC_f2577' '-I' '/opt/cray/pe/dsmml/0.3.1/dsmml/include' '-I' '/opt/cray/pe/libsci/25.03.0/GNU/12.2/x86_64/include' '-I' '/opt/cray/pe/mpich/8.1.32/ofi/gnu/11.2/include' '-L/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/lib64' '-L/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/nvvm/lib64' '-L/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/extras/CUPTI/lib64' '-L/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/math_libs/12.8/lib64' '-L/opt/cray/pe/dsmml/0.3.1/dsmml/lib' '-L/opt/cray/pe/libsci/25.03.0/GNU/12.2/x86_64/lib' '-L/opt/cray/pe/mpich/8.1.32/ofi/gnu/11.2/lib' '-L/opt/cray/pe/mpich/8.1.32/gtl/lib' '-dumpdir' 'cmTC_f2577.']
+        link line: [ /opt/rh/gcc-toolset-13/root/usr/libexec/gcc/x86_64-redhat-linux/13/collect2 -plugin /opt/rh/gcc-toolset-13/root/usr/libexec/gcc/x86_64-redhat-linux/13/liblto_plugin.so -plugin-opt=/opt/rh/gcc-toolset-13/root/usr/libexec/gcc/x86_64-redhat-linux/13/lto-wrapper -plugin-opt=-fresolution=/tmp/ccmrbi3d.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --build-id --no-add-needed --eh-frame-hdr --hash-style=gnu -m elf_x86_64 -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o cmTC_f2577 /lib/../lib64/crt1.o /lib/../lib64/crti.o /opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/crtbegin.o -L/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/lib64 -L/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/nvvm/lib64 -L/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/extras/CUPTI/lib64 -L/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/math_libs/12.8/lib64 -L/opt/cray/pe/dsmml/0.3.1/dsmml/lib -L/opt/cray/pe/libsci/25.03.0/GNU/12.2/x86_64/lib -L/opt/cray/pe/mpich/8.1.32/ofi/gnu/11.2/lib -L/opt/cray/pe/mpich/8.1.32/gtl/lib -L/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13 -L/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/../../../../lib64 -L/lib/../lib64 -L/usr/lib/../lib64 -L/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/../../.. CMakeFiles/cmTC_f2577.dir/CMakeCCompilerABI.c.o -Bdynamic --as-needed -lcupti -lcudart --no-as-needed -lcuda --as-needed -ldsmml --no-as-needed --as-needed -lsci_gnu_mpi --no-as-needed -lmpi_gtl_cuda --as-needed -lsci_gnu --no-as-needed -ldl --as-needed -lmpi_gnu_112 --no-as-needed -lmpi_gtl_cuda --as-needed -lgfortran -lquadmath --no-as-needed --as-needed -lmvec --no-as-needed --as-needed -lm --no-as-needed --as-needed -lpthread --no-as-needed --disable-new-dtags -lgcc --push-state --as-needed -lgcc_s --pop-state -lc -lgcc --push-state --as-needed -lgcc_s --pop-state /opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/crtend.o /lib/../lib64/crtn.o]
+          arg [/opt/rh/gcc-toolset-13/root/usr/libexec/gcc/x86_64-redhat-linux/13/collect2] ==> ignore
+          arg [-plugin] ==> ignore
+          arg [/opt/rh/gcc-toolset-13/root/usr/libexec/gcc/x86_64-redhat-linux/13/liblto_plugin.so] ==> ignore
+          arg [-plugin-opt=/opt/rh/gcc-toolset-13/root/usr/libexec/gcc/x86_64-redhat-linux/13/lto-wrapper] ==> ignore
+          arg [-plugin-opt=-fresolution=/tmp/ccmrbi3d.res] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+          arg [-plugin-opt=-pass-through=-lc] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+          arg [--build-id] ==> ignore
+          arg [--no-add-needed] ==> ignore
+          arg [--eh-frame-hdr] ==> ignore
+          arg [--hash-style=gnu] ==> ignore
+          arg [-m] ==> ignore
+          arg [elf_x86_64] ==> ignore
+          arg [-dynamic-linker] ==> ignore
+          arg [/lib64/ld-linux-x86-64.so.2] ==> ignore
+          arg [-o] ==> ignore
+          arg [cmTC_f2577] ==> ignore
+          arg [/lib/../lib64/crt1.o] ==> obj [/lib/../lib64/crt1.o]
+          arg [/lib/../lib64/crti.o] ==> obj [/lib/../lib64/crti.o]
+          arg [/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/crtbegin.o] ==> obj [/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/crtbegin.o]
+          arg [-L/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/lib64] ==> dir [/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/lib64]
+          arg [-L/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/nvvm/lib64] ==> dir [/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/nvvm/lib64]
+          arg [-L/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/extras/CUPTI/lib64] ==> dir [/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/extras/CUPTI/lib64]
+          arg [-L/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/math_libs/12.8/lib64] ==> dir [/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/math_libs/12.8/lib64]
+          arg [-L/opt/cray/pe/dsmml/0.3.1/dsmml/lib] ==> dir [/opt/cray/pe/dsmml/0.3.1/dsmml/lib]
+          arg [-L/opt/cray/pe/libsci/25.03.0/GNU/12.2/x86_64/lib] ==> dir [/opt/cray/pe/libsci/25.03.0/GNU/12.2/x86_64/lib]
+          arg [-L/opt/cray/pe/mpich/8.1.32/ofi/gnu/11.2/lib] ==> dir [/opt/cray/pe/mpich/8.1.32/ofi/gnu/11.2/lib]
+          arg [-L/opt/cray/pe/mpich/8.1.32/gtl/lib] ==> dir [/opt/cray/pe/mpich/8.1.32/gtl/lib]
+          arg [-L/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13] ==> dir [/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13]
+          arg [-L/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/../../../../lib64] ==> dir [/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/../../../../lib64]
+          arg [-L/lib/../lib64] ==> dir [/lib/../lib64]
+          arg [-L/usr/lib/../lib64] ==> dir [/usr/lib/../lib64]
+          arg [-L/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/../../..] ==> dir [/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/../../..]
+          arg [CMakeFiles/cmTC_f2577.dir/CMakeCCompilerABI.c.o] ==> ignore
+          arg [-Bdynamic] ==> search dynamic
+          arg [--as-needed] ==> ignore
+          arg [-lcupti] ==> lib [cupti]
+          arg [-lcudart] ==> lib [cudart]
+          arg [--no-as-needed] ==> ignore
+          arg [-lcuda] ==> lib [cuda]
+          arg [--as-needed] ==> ignore
+          arg [-ldsmml] ==> lib [dsmml]
+          arg [--no-as-needed] ==> ignore
+          arg [--as-needed] ==> ignore
+          arg [-lsci_gnu_mpi] ==> lib [sci_gnu_mpi]
+          arg [--no-as-needed] ==> ignore
+          arg [-lmpi_gtl_cuda] ==> lib [mpi_gtl_cuda]
+          arg [--as-needed] ==> ignore
+          arg [-lsci_gnu] ==> lib [sci_gnu]
+          arg [--no-as-needed] ==> ignore
+          arg [-ldl] ==> lib [dl]
+          arg [--as-needed] ==> ignore
+          arg [-lmpi_gnu_112] ==> lib [mpi_gnu_112]
+          arg [--no-as-needed] ==> ignore
+          arg [-lmpi_gtl_cuda] ==> lib [mpi_gtl_cuda]
+          arg [--as-needed] ==> ignore
+          arg [-lgfortran] ==> lib [gfortran]
+          arg [-lquadmath] ==> lib [quadmath]
+          arg [--no-as-needed] ==> ignore
+          arg [--as-needed] ==> ignore
+          arg [-lmvec] ==> lib [mvec]
+          arg [--no-as-needed] ==> ignore
+          arg [--as-needed] ==> ignore
+          arg [-lm] ==> lib [m]
+          arg [--no-as-needed] ==> ignore
+          arg [--as-needed] ==> ignore
+          arg [-lpthread] ==> lib [pthread]
+          arg [--no-as-needed] ==> ignore
+          arg [--disable-new-dtags] ==> ignore
+          arg [-lgcc] ==> lib [gcc]
+          arg [--push-state] ==> ignore
+          arg [--as-needed] ==> ignore
+          arg [-lgcc_s] ==> lib [gcc_s]
+          arg [--pop-state] ==> ignore
+          arg [-lc] ==> lib [c]
+          arg [-lgcc] ==> lib [gcc]
+          arg [--push-state] ==> ignore
+          arg [--as-needed] ==> ignore
+          arg [-lgcc_s] ==> lib [gcc_s]
+          arg [--pop-state] ==> ignore
+          arg [/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/crtend.o] ==> obj [/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/crtend.o]
+          arg [/lib/../lib64/crtn.o] ==> obj [/lib/../lib64/crtn.o]
+        collapse obj [/lib/../lib64/crt1.o] ==> [/lib64/crt1.o]
+        collapse obj [/lib/../lib64/crti.o] ==> [/lib64/crti.o]
+        collapse obj [/lib/../lib64/crtn.o] ==> [/lib64/crtn.o]
+        collapse library dir [/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/lib64] ==> [/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/lib64]
+        collapse library dir [/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/nvvm/lib64] ==> [/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/nvvm/lib64]
+        collapse library dir [/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/extras/CUPTI/lib64] ==> [/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/extras/CUPTI/lib64]
+        collapse library dir [/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/math_libs/12.8/lib64] ==> [/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/math_libs/12.8/lib64]
+        collapse library dir [/opt/cray/pe/dsmml/0.3.1/dsmml/lib] ==> [/opt/cray/pe/dsmml/0.3.1/dsmml/lib]
+        collapse library dir [/opt/cray/pe/libsci/25.03.0/GNU/12.2/x86_64/lib] ==> [/opt/cray/pe/libsci/25.03.0/GNU/12.2/x86_64/lib]
+        collapse library dir [/opt/cray/pe/mpich/8.1.32/ofi/gnu/11.2/lib] ==> [/opt/cray/pe/mpich/8.1.32/ofi/gnu/11.2/lib]
+        collapse library dir [/opt/cray/pe/mpich/8.1.32/gtl/lib] ==> [/opt/cray/pe/mpich/8.1.32/gtl/lib]
+        collapse library dir [/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13] ==> [/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13]
+        collapse library dir [/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/../../../../lib64] ==> [/opt/rh/gcc-toolset-13/root/usr/lib64]
+        collapse library dir [/lib/../lib64] ==> [/lib64]
+        collapse library dir [/usr/lib/../lib64] ==> [/usr/lib64]
+        collapse library dir [/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/../../..] ==> [/opt/rh/gcc-toolset-13/root/usr/lib]
+        implicit libs: [cupti;cudart;cuda;dsmml;sci_gnu_mpi;mpi_gtl_cuda;sci_gnu;dl;mpi_gnu_112;mpi_gtl_cuda;gfortran;quadmath;mvec;m;pthread;gcc;gcc_s;c;gcc;gcc_s]
+        implicit objs: [/lib64/crt1.o;/lib64/crti.o;/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/crtbegin.o;/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/crtend.o;/lib64/crtn.o]
+        implicit dirs: [/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/lib64;/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/nvvm/lib64;/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/extras/CUPTI/lib64;/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/math_libs/12.8/lib64;/opt/cray/pe/dsmml/0.3.1/dsmml/lib;/opt/cray/pe/libsci/25.03.0/GNU/12.2/x86_64/lib;/opt/cray/pe/mpich/8.1.32/ofi/gnu/11.2/lib;/opt/cray/pe/mpich/8.1.32/gtl/lib;/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13;/opt/rh/gcc-toolset-13/root/usr/lib64;/lib64;/usr/lib64;/opt/rh/gcc-toolset-13/root/usr/lib]
+        implicit fwks: []
+      
+      
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/CMakeDetermineCompilerABI.cmake:57 (try_compile)"
+      - "/usr/share/cmake/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:2 (project)"
+    checks:
+      - "Detecting CXX compiler ABI info"
+    directories:
+      source: "/u/ajain18/jacobi2d/build/CMakeFiles/CMakeScratch/TryCompile-mHajQu"
+      binary: "/u/ajain18/jacobi2d/build/CMakeFiles/CMakeScratch/TryCompile-mHajQu"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: ""
+      CMAKE_CXX_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+    buildResult:
+      variable: "CMAKE_CXX_ABI_COMPILED"
+      cached: true
+      stdout: |
+        Change Dir: /u/ajain18/jacobi2d/build/CMakeFiles/CMakeScratch/TryCompile-mHajQu
+        
+        Run Build Command(s):/usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_1da07/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_1da07.dir/build.make CMakeFiles/cmTC_1da07.dir/build
+        gmake[1]: Entering directory '/u/ajain18/jacobi2d/build/CMakeFiles/CMakeScratch/TryCompile-mHajQu'
+        Building CXX object CMakeFiles/cmTC_1da07.dir/CMakeCXXCompilerABI.cpp.o
+        /opt/cray/pe/craype/2.7.34/bin/CC   -v -o CMakeFiles/cmTC_1da07.dir/CMakeCXXCompilerABI.cpp.o -c /usr/share/cmake/Modules/CMakeCXXCompilerABI.cpp
+        Using built-in specs.
+        COLLECT_GCC=g++
+        OFFLOAD_TARGET_NAMES=nvptx-none
+        OFFLOAD_TARGET_DEFAULT=1
+        Target: x86_64-redhat-linux
+        Configured with: ../configure --enable-bootstrap --enable-languages=c,c++,fortran,lto --prefix=/opt/rh/gcc-toolset-13/root/usr --mandir=/opt/rh/gcc-toolset-13/root/usr/share/man --infodir=/opt/rh/gcc-toolset-13/root/usr/share/info --with-bugurl=http://bugzilla.redhat.com/bugzilla --enable-shared --enable-threads=posix --enable-checking=release --enable-multilib --with-system-zlib --enable-__cxa_atexit --disable-libunwind-exceptions --enable-gnu-unique-object --enable-linker-build-id --with-gcc-major-version-only --enable-libstdcxx-backtrace --with-libstdcxx-zoneinfo=/usr/share/zoneinfo --with-linker-hash-style=gnu --enable-plugin --enable-initfini-array --without-isl --enable-offload-targets=nvptx-none --without-cuda-driver --enable-offload-defaulted --enable-gnu-indirect-function --enable-cet --with-tune=generic --with-arch_64=x86-64-v2 --with-arch_32=x86-64 --build=x86_64-redhat-linux --with-build-config=bootstrap-lto --enable-link-serialization=1
+        Thread model: posix
+        Supported LTO compression algorithms: zlib zstd
+        gcc version 13.3.1 20240611 (Red Hat 13.3.1-2) (GCC) 
+        COLLECT_GCC_OPTIONS='-march=znver3' '-D' '__CRAY_X86_MILAN' '-D' '__CRAY_NVIDIA80' '-D' '__CRAYXT_COMPUTE_LINUX_TARGET' '-D' '__TARGET_LINUX__' '-v' '-o' 'CMakeFiles/cmTC_1da07.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-I' '/opt/cray/pe/dsmml/0.3.1/dsmml/include' '-I' '/opt/cray/pe/libsci/25.03.0/GNU/12.2/x86_64/include' '-I' '/opt/cray/pe/mpich/8.1.32/ofi/gnu/11.2/include' '-shared-libgcc' '-dumpdir' 'CMakeFiles/cmTC_1da07.dir/'
+         /opt/rh/gcc-toolset-13/root/usr/libexec/gcc/x86_64-redhat-linux/13/cc1plus -quiet -v -I /opt/cray/pe/dsmml/0.3.1/dsmml/include -I /opt/cray/pe/libsci/25.03.0/GNU/12.2/x86_64/include -I /opt/cray/pe/mpich/8.1.32/ofi/gnu/11.2/include -D_GNU_SOURCE -D __CRAY_X86_MILAN -D __CRAY_NVIDIA80 -D __CRAYXT_COMPUTE_LINUX_TARGET -D __TARGET_LINUX__ /usr/share/cmake/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpdir CMakeFiles/cmTC_1da07.dir/ -dumpbase CMakeCXXCompilerABI.cpp.cpp -dumpbase-ext .cpp -march=znver3 -version -o /tmp/ccotg95f.s
+        GNU C++17 (GCC) version 13.3.1 20240611 (Red Hat 13.3.1-2) (x86_64-redhat-linux)
+        	compiled by GNU C version 13.3.1 20240611 (Red Hat 13.3.1-2), GMP version 6.2.0, MPFR version 4.1.0-p9, MPC version 1.2.1, isl version none
+        GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+        ignoring nonexistent directory "/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/include-fixed"
+        ignoring nonexistent directory "/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/../../../../x86_64-redhat-linux/include"
+        #include "..." search starts here:
+        #include <...> search starts here:
+         /opt/cray/pe/dsmml/0.3.1/dsmml/include
+         /opt/cray/pe/libsci/25.03.0/GNU/12.2/x86_64/include
+         /opt/cray/pe/mpich/8.1.32/ofi/gnu/11.2/include
+         /opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/include
+         /opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/nvvm/include
+         /opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/extras/Debugger/include
+         /opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/extras/CUPTI/include
+         /opt/nvidia/hpc_sdk/Linux_x86_64/25.3/math_libs/12.8/include
+         /opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/../../../../include/c++/13
+         /opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/../../../../include/c++/13/x86_64-redhat-linux
+         /opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/../../../../include/c++/13/backward
+         /opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/include
+         /usr/local/include
+         /opt/rh/gcc-toolset-13/root/usr/include
+         /usr/include
+        End of search list.
+        Compiler executable checksum: c460039666e3065ffc90206593c9083f
+        COLLECT_GCC_OPTIONS='-march=znver3' '-D' '__CRAY_X86_MILAN' '-D' '__CRAY_NVIDIA80' '-D' '__CRAYXT_COMPUTE_LINUX_TARGET' '-D' '__TARGET_LINUX__' '-v' '-o' 'CMakeFiles/cmTC_1da07.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-I' '/opt/cray/pe/dsmml/0.3.1/dsmml/include' '-I' '/opt/cray/pe/libsci/25.03.0/GNU/12.2/x86_64/include' '-I' '/opt/cray/pe/mpich/8.1.32/ofi/gnu/11.2/include' '-shared-libgcc' '-dumpdir' 'CMakeFiles/cmTC_1da07.dir/'
+         /opt/rh/gcc-toolset-13/root/usr/libexec/gcc/x86_64-redhat-linux/13/as -v -I /opt/cray/pe/dsmml/0.3.1/dsmml/include -I /opt/cray/pe/libsci/25.03.0/GNU/12.2/x86_64/include -I /opt/cray/pe/mpich/8.1.32/ofi/gnu/11.2/include --64 -o CMakeFiles/cmTC_1da07.dir/CMakeCXXCompilerABI.cpp.o /tmp/ccotg95f.s
+        GNU assembler version 2.40 (x86_64-redhat-linux) using BFD version version 2.40-21.el9
+        COMPILER_PATH=/opt/rh/gcc-toolset-13/root/usr/libexec/gcc/x86_64-redhat-linux/13/:/opt/rh/gcc-toolset-13/root/usr/libexec/gcc/x86_64-redhat-linux/13/:/opt/rh/gcc-toolset-13/root/usr/libexec/gcc/x86_64-redhat-linux/:/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/:/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/
+        LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/:/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/../../../../lib64/:/lib/../lib64/:/usr/lib/../lib64/:/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/../../../:/lib/:/usr/lib/
+        COLLECT_GCC_OPTIONS='-march=znver3' '-D' '__CRAY_X86_MILAN' '-D' '__CRAY_NVIDIA80' '-D' '__CRAYXT_COMPUTE_LINUX_TARGET' '-D' '__TARGET_LINUX__' '-v' '-o' 'CMakeFiles/cmTC_1da07.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-I' '/opt/cray/pe/dsmml/0.3.1/dsmml/include' '-I' '/opt/cray/pe/libsci/25.03.0/GNU/12.2/x86_64/include' '-I' '/opt/cray/pe/mpich/8.1.32/ofi/gnu/11.2/include' '-shared-libgcc' '-dumpdir' 'CMakeFiles/cmTC_1da07.dir/CMakeCXXCompilerABI.cpp.'
+        Linking CXX executable cmTC_1da07
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_1da07.dir/link.txt --verbose=1
+        /opt/cray/pe/craype/2.7.34/bin/CC  -v CMakeFiles/cmTC_1da07.dir/CMakeCXXCompilerABI.cpp.o -o cmTC_1da07 
+        Using built-in specs.
+        COLLECT_GCC=g++
+        COLLECT_LTO_WRAPPER=/opt/rh/gcc-toolset-13/root/usr/libexec/gcc/x86_64-redhat-linux/13/lto-wrapper
+        OFFLOAD_TARGET_NAMES=nvptx-none
+        OFFLOAD_TARGET_DEFAULT=1
+        Target: x86_64-redhat-linux
+        Configured with: ../configure --enable-bootstrap --enable-languages=c,c++,fortran,lto --prefix=/opt/rh/gcc-toolset-13/root/usr --mandir=/opt/rh/gcc-toolset-13/root/usr/share/man --infodir=/opt/rh/gcc-toolset-13/root/usr/share/info --with-bugurl=http://bugzilla.redhat.com/bugzilla --enable-shared --enable-threads=posix --enable-checking=release --enable-multilib --with-system-zlib --enable-__cxa_atexit --disable-libunwind-exceptions --enable-gnu-unique-object --enable-linker-build-id --with-gcc-major-version-only --enable-libstdcxx-backtrace --with-libstdcxx-zoneinfo=/usr/share/zoneinfo --with-linker-hash-style=gnu --enable-plugin --enable-initfini-array --without-isl --enable-offload-targets=nvptx-none --without-cuda-driver --enable-offload-defaulted --enable-gnu-indirect-function --enable-cet --with-tune=generic --with-arch_64=x86-64-v2 --with-arch_32=x86-64 --build=x86_64-redhat-linux --with-build-config=bootstrap-lto --enable-link-serialization=1
+        Thread model: posix
+        Supported LTO compression algorithms: zlib zstd
+        gcc version 13.3.1 20240611 (Red Hat 13.3.1-2) (GCC) 
+        COMPILER_PATH=/opt/rh/gcc-toolset-13/root/usr/libexec/gcc/x86_64-redhat-linux/13/:/opt/rh/gcc-toolset-13/root/usr/libexec/gcc/x86_64-redhat-linux/13/:/opt/rh/gcc-toolset-13/root/usr/libexec/gcc/x86_64-redhat-linux/:/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/:/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/
+        LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/:/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/../../../../lib64/:/lib/../lib64/:/usr/lib/../lib64/:/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/../../../:/lib/:/usr/lib/
+        COLLECT_GCC_OPTIONS='-march=znver3' '-D' '__CRAY_X86_MILAN' '-D' '__CRAY_NVIDIA80' '-D' '__CRAYXT_COMPUTE_LINUX_TARGET' '-D' '__TARGET_LINUX__' '-v' '-o' 'cmTC_1da07' '-I' '/opt/cray/pe/dsmml/0.3.1/dsmml/include' '-I' '/opt/cray/pe/libsci/25.03.0/GNU/12.2/x86_64/include' '-I' '/opt/cray/pe/mpich/8.1.32/ofi/gnu/11.2/include' '-L/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/lib64' '-L/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/nvvm/lib64' '-L/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/extras/CUPTI/lib64' '-L/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/math_libs/12.8/lib64' '-L/opt/cray/pe/dsmml/0.3.1/dsmml/lib' '-L/opt/cray/pe/libsci/25.03.0/GNU/12.2/x86_64/lib' '-L/opt/cray/pe/mpich/8.1.32/ofi/gnu/11.2/lib' '-L/opt/cray/pe/mpich/8.1.32/gtl/lib' '-shared-libgcc' '-dumpdir' 'cmTC_1da07.'
+         /opt/rh/gcc-toolset-13/root/usr/libexec/gcc/x86_64-redhat-linux/13/collect2 -plugin /opt/rh/gcc-toolset-13/root/usr/libexec/gcc/x86_64-redhat-linux/13/liblto_plugin.so -plugin-opt=/opt/rh/gcc-toolset-13/root/usr/libexec/gcc/x86_64-redhat-linux/13/lto-wrapper -plugin-opt=-fresolution=/tmp/cc8LPFd0.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --no-add-needed --eh-frame-hdr --hash-style=gnu -m elf_x86_64 -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o cmTC_1da07 /lib/../lib64/crt1.o /lib/../lib64/crti.o /opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/crtbegin.o -L/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/lib64 -L/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/nvvm/lib64 -L/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/extras/CUPTI/lib64 -L/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/math_libs/12.8/lib64 -L/opt/cray/pe/dsmml/0.3.1/dsmml/lib -L/opt/cray/pe/libsci/25.03.0/GNU/12.2/x86_64/lib -L/opt/cray/pe/mpich/8.1.32/ofi/gnu/11.2/lib -L/opt/cray/pe/mpich/8.1.32/gtl/lib -L/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13 -L/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/../../../../lib64 -L/lib/../lib64 -L/usr/lib/../lib64 -L/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/../../.. CMakeFiles/cmTC_1da07.dir/CMakeCXXCompilerABI.cpp.o -Bdynamic --as-needed -lcupti -lcudart --no-as-needed -lcuda --as-needed -ldsmml --no-as-needed --as-needed -lsci_gnu_mpi --no-as-needed -lmpi_gtl_cuda --as-needed -lsci_gnu --no-as-needed -ldl --as-needed -lmpi_gnu_112 --no-as-needed -lmpi_gtl_cuda --as-needed -lgfortran -lquadmath --no-as-needed --as-needed -lmvec --no-as-needed --as-needed -lm --no-as-needed --as-needed -lpthread --no-as-needed --disable-new-dtags -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/crtend.o /lib/../lib64/crtn.o
+        COLLECT_GCC_OPTIONS='-march=znver3' '-D' '__CRAY_X86_MILAN' '-D' '__CRAY_NVIDIA80' '-D' '__CRAYXT_COMPUTE_LINUX_TARGET' '-D' '__TARGET_LINUX__' '-v' '-o' 'cmTC_1da07' '-I' '/opt/cray/pe/dsmml/0.3.1/dsmml/include' '-I' '/opt/cray/pe/libsci/25.03.0/GNU/12.2/x86_64/include' '-I' '/opt/cray/pe/mpich/8.1.32/ofi/gnu/11.2/include' '-L/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/lib64' '-L/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/nvvm/lib64' '-L/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/extras/CUPTI/lib64' '-L/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/math_libs/12.8/lib64' '-L/opt/cray/pe/dsmml/0.3.1/dsmml/lib' '-L/opt/cray/pe/libsci/25.03.0/GNU/12.2/x86_64/lib' '-L/opt/cray/pe/mpich/8.1.32/ofi/gnu/11.2/lib' '-L/opt/cray/pe/mpich/8.1.32/gtl/lib' '-shared-libgcc' '-dumpdir' 'cmTC_1da07.'
+        gmake[1]: Leaving directory '/u/ajain18/jacobi2d/build/CMakeFiles/CMakeScratch/TryCompile-mHajQu'
+        
+      exitCode: 0
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/CMakeDetermineCompilerABI.cmake:127 (message)"
+      - "/usr/share/cmake/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:2 (project)"
+    message: |
+      Parsed CXX implicit include dir info: rv=done
+        found start of include info
+        found start of implicit include info
+          add: [/opt/cray/pe/dsmml/0.3.1/dsmml/include]
+          add: [/opt/cray/pe/libsci/25.03.0/GNU/12.2/x86_64/include]
+          add: [/opt/cray/pe/mpich/8.1.32/ofi/gnu/11.2/include]
+          add: [/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/include]
+          add: [/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/nvvm/include]
+          add: [/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/extras/Debugger/include]
+          add: [/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/extras/CUPTI/include]
+          add: [/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/math_libs/12.8/include]
+          add: [/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/../../../../include/c++/13]
+          add: [/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/../../../../include/c++/13/x86_64-redhat-linux]
+          add: [/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/../../../../include/c++/13/backward]
+          add: [/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/include]
+          add: [/usr/local/include]
+          add: [/opt/rh/gcc-toolset-13/root/usr/include]
+          add: [/usr/include]
+        end of search list found
+        collapse include dir [/opt/cray/pe/dsmml/0.3.1/dsmml/include] ==> [/opt/cray/pe/dsmml/0.3.1/dsmml/include]
+        collapse include dir [/opt/cray/pe/libsci/25.03.0/GNU/12.2/x86_64/include] ==> [/opt/cray/pe/libsci/25.03.0/GNU/12.2/x86_64/include]
+        collapse include dir [/opt/cray/pe/mpich/8.1.32/ofi/gnu/11.2/include] ==> [/opt/cray/pe/mpich/8.1.32/ofi/gnu/11.2/include]
+        collapse include dir [/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/include] ==> [/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/include]
+        collapse include dir [/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/nvvm/include] ==> [/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/nvvm/include]
+        collapse include dir [/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/extras/Debugger/include] ==> [/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/extras/Debugger/include]
+        collapse include dir [/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/extras/CUPTI/include] ==> [/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/extras/CUPTI/include]
+        collapse include dir [/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/math_libs/12.8/include] ==> [/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/math_libs/12.8/include]
+        collapse include dir [/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/../../../../include/c++/13] ==> [/opt/rh/gcc-toolset-13/root/usr/include/c++/13]
+        collapse include dir [/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/../../../../include/c++/13/x86_64-redhat-linux] ==> [/opt/rh/gcc-toolset-13/root/usr/include/c++/13/x86_64-redhat-linux]
+        collapse include dir [/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/../../../../include/c++/13/backward] ==> [/opt/rh/gcc-toolset-13/root/usr/include/c++/13/backward]
+        collapse include dir [/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/include] ==> [/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/include]
+        collapse include dir [/usr/local/include] ==> [/usr/local/include]
+        collapse include dir [/opt/rh/gcc-toolset-13/root/usr/include] ==> [/opt/rh/gcc-toolset-13/root/usr/include]
+        collapse include dir [/usr/include] ==> [/usr/include]
+        implicit include dirs: [/opt/cray/pe/dsmml/0.3.1/dsmml/include;/opt/cray/pe/libsci/25.03.0/GNU/12.2/x86_64/include;/opt/cray/pe/mpich/8.1.32/ofi/gnu/11.2/include;/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/include;/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/nvvm/include;/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/extras/Debugger/include;/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/extras/CUPTI/include;/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/math_libs/12.8/include;/opt/rh/gcc-toolset-13/root/usr/include/c++/13;/opt/rh/gcc-toolset-13/root/usr/include/c++/13/x86_64-redhat-linux;/opt/rh/gcc-toolset-13/root/usr/include/c++/13/backward;/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/include;/usr/local/include;/opt/rh/gcc-toolset-13/root/usr/include;/usr/include]
+      
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/CMakeDetermineCompilerABI.cmake:152 (message)"
+      - "/usr/share/cmake/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:2 (project)"
+    message: |
+      Parsed CXX implicit link information:
+        link line regex: [^( *|.*[/\\])(ld|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\\]+-)?ld|collect2)[^/\\]*( |$)]
+        ignore line: [Change Dir: /u/ajain18/jacobi2d/build/CMakeFiles/CMakeScratch/TryCompile-mHajQu]
+        ignore line: []
+        ignore line: [Run Build Command(s):/usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_1da07/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_1da07.dir/build.make CMakeFiles/cmTC_1da07.dir/build]
+        ignore line: [gmake[1]: Entering directory '/u/ajain18/jacobi2d/build/CMakeFiles/CMakeScratch/TryCompile-mHajQu']
+        ignore line: [Building CXX object CMakeFiles/cmTC_1da07.dir/CMakeCXXCompilerABI.cpp.o]
+        ignore line: [/opt/cray/pe/craype/2.7.34/bin/CC   -v -o CMakeFiles/cmTC_1da07.dir/CMakeCXXCompilerABI.cpp.o -c /usr/share/cmake/Modules/CMakeCXXCompilerABI.cpp]
+        ignore line: [Using built-in specs.]
+        ignore line: [COLLECT_GCC=g++]
+        ignore line: [OFFLOAD_TARGET_NAMES=nvptx-none]
+        ignore line: [OFFLOAD_TARGET_DEFAULT=1]
+        ignore line: [Target: x86_64-redhat-linux]
+        ignore line: [Configured with: ../configure --enable-bootstrap --enable-languages=c c++ fortran lto --prefix=/opt/rh/gcc-toolset-13/root/usr --mandir=/opt/rh/gcc-toolset-13/root/usr/share/man --infodir=/opt/rh/gcc-toolset-13/root/usr/share/info --with-bugurl=http://bugzilla.redhat.com/bugzilla --enable-shared --enable-threads=posix --enable-checking=release --enable-multilib --with-system-zlib --enable-__cxa_atexit --disable-libunwind-exceptions --enable-gnu-unique-object --enable-linker-build-id --with-gcc-major-version-only --enable-libstdcxx-backtrace --with-libstdcxx-zoneinfo=/usr/share/zoneinfo --with-linker-hash-style=gnu --enable-plugin --enable-initfini-array --without-isl --enable-offload-targets=nvptx-none --without-cuda-driver --enable-offload-defaulted --enable-gnu-indirect-function --enable-cet --with-tune=generic --with-arch_64=x86-64-v2 --with-arch_32=x86-64 --build=x86_64-redhat-linux --with-build-config=bootstrap-lto --enable-link-serialization=1]
+        ignore line: [Thread model: posix]
+        ignore line: [Supported LTO compression algorithms: zlib zstd]
+        ignore line: [gcc version 13.3.1 20240611 (Red Hat 13.3.1-2) (GCC) ]
+        ignore line: [COLLECT_GCC_OPTIONS='-march=znver3' '-D' '__CRAY_X86_MILAN' '-D' '__CRAY_NVIDIA80' '-D' '__CRAYXT_COMPUTE_LINUX_TARGET' '-D' '__TARGET_LINUX__' '-v' '-o' 'CMakeFiles/cmTC_1da07.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-I' '/opt/cray/pe/dsmml/0.3.1/dsmml/include' '-I' '/opt/cray/pe/libsci/25.03.0/GNU/12.2/x86_64/include' '-I' '/opt/cray/pe/mpich/8.1.32/ofi/gnu/11.2/include' '-shared-libgcc' '-dumpdir' 'CMakeFiles/cmTC_1da07.dir/']
+        ignore line: [ /opt/rh/gcc-toolset-13/root/usr/libexec/gcc/x86_64-redhat-linux/13/cc1plus -quiet -v -I /opt/cray/pe/dsmml/0.3.1/dsmml/include -I /opt/cray/pe/libsci/25.03.0/GNU/12.2/x86_64/include -I /opt/cray/pe/mpich/8.1.32/ofi/gnu/11.2/include -D_GNU_SOURCE -D __CRAY_X86_MILAN -D __CRAY_NVIDIA80 -D __CRAYXT_COMPUTE_LINUX_TARGET -D __TARGET_LINUX__ /usr/share/cmake/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpdir CMakeFiles/cmTC_1da07.dir/ -dumpbase CMakeCXXCompilerABI.cpp.cpp -dumpbase-ext .cpp -march=znver3 -version -o /tmp/ccotg95f.s]
+        ignore line: [GNU C++17 (GCC) version 13.3.1 20240611 (Red Hat 13.3.1-2) (x86_64-redhat-linux)]
+        ignore line: [	compiled by GNU C version 13.3.1 20240611 (Red Hat 13.3.1-2)  GMP version 6.2.0  MPFR version 4.1.0-p9  MPC version 1.2.1  isl version none]
+        ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
+        ignore line: [ignoring nonexistent directory "/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/include-fixed"]
+        ignore line: [ignoring nonexistent directory "/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/../../../../x86_64-redhat-linux/include"]
+        ignore line: [#include "..." search starts here:]
+        ignore line: [#include <...> search starts here:]
+        ignore line: [ /opt/cray/pe/dsmml/0.3.1/dsmml/include]
+        ignore line: [ /opt/cray/pe/libsci/25.03.0/GNU/12.2/x86_64/include]
+        ignore line: [ /opt/cray/pe/mpich/8.1.32/ofi/gnu/11.2/include]
+        ignore line: [ /opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/include]
+        ignore line: [ /opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/nvvm/include]
+        ignore line: [ /opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/extras/Debugger/include]
+        ignore line: [ /opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/extras/CUPTI/include]
+        ignore line: [ /opt/nvidia/hpc_sdk/Linux_x86_64/25.3/math_libs/12.8/include]
+        ignore line: [ /opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/../../../../include/c++/13]
+        ignore line: [ /opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/../../../../include/c++/13/x86_64-redhat-linux]
+        ignore line: [ /opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/../../../../include/c++/13/backward]
+        ignore line: [ /opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/include]
+        ignore line: [ /usr/local/include]
+        ignore line: [ /opt/rh/gcc-toolset-13/root/usr/include]
+        ignore line: [ /usr/include]
+        ignore line: [End of search list.]
+        ignore line: [Compiler executable checksum: c460039666e3065ffc90206593c9083f]
+        ignore line: [COLLECT_GCC_OPTIONS='-march=znver3' '-D' '__CRAY_X86_MILAN' '-D' '__CRAY_NVIDIA80' '-D' '__CRAYXT_COMPUTE_LINUX_TARGET' '-D' '__TARGET_LINUX__' '-v' '-o' 'CMakeFiles/cmTC_1da07.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-I' '/opt/cray/pe/dsmml/0.3.1/dsmml/include' '-I' '/opt/cray/pe/libsci/25.03.0/GNU/12.2/x86_64/include' '-I' '/opt/cray/pe/mpich/8.1.32/ofi/gnu/11.2/include' '-shared-libgcc' '-dumpdir' 'CMakeFiles/cmTC_1da07.dir/']
+        ignore line: [ /opt/rh/gcc-toolset-13/root/usr/libexec/gcc/x86_64-redhat-linux/13/as -v -I /opt/cray/pe/dsmml/0.3.1/dsmml/include -I /opt/cray/pe/libsci/25.03.0/GNU/12.2/x86_64/include -I /opt/cray/pe/mpich/8.1.32/ofi/gnu/11.2/include --64 -o CMakeFiles/cmTC_1da07.dir/CMakeCXXCompilerABI.cpp.o /tmp/ccotg95f.s]
+        ignore line: [GNU assembler version 2.40 (x86_64-redhat-linux) using BFD version version 2.40-21.el9]
+        ignore line: [COMPILER_PATH=/opt/rh/gcc-toolset-13/root/usr/libexec/gcc/x86_64-redhat-linux/13/:/opt/rh/gcc-toolset-13/root/usr/libexec/gcc/x86_64-redhat-linux/13/:/opt/rh/gcc-toolset-13/root/usr/libexec/gcc/x86_64-redhat-linux/:/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/:/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/]
+        ignore line: [LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/:/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/../../../../lib64/:/lib/../lib64/:/usr/lib/../lib64/:/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/../../../:/lib/:/usr/lib/]
+        ignore line: [COLLECT_GCC_OPTIONS='-march=znver3' '-D' '__CRAY_X86_MILAN' '-D' '__CRAY_NVIDIA80' '-D' '__CRAYXT_COMPUTE_LINUX_TARGET' '-D' '__TARGET_LINUX__' '-v' '-o' 'CMakeFiles/cmTC_1da07.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-I' '/opt/cray/pe/dsmml/0.3.1/dsmml/include' '-I' '/opt/cray/pe/libsci/25.03.0/GNU/12.2/x86_64/include' '-I' '/opt/cray/pe/mpich/8.1.32/ofi/gnu/11.2/include' '-shared-libgcc' '-dumpdir' 'CMakeFiles/cmTC_1da07.dir/CMakeCXXCompilerABI.cpp.']
+        ignore line: [Linking CXX executable cmTC_1da07]
+        ignore line: [/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_1da07.dir/link.txt --verbose=1]
+        ignore line: [/opt/cray/pe/craype/2.7.34/bin/CC  -v CMakeFiles/cmTC_1da07.dir/CMakeCXXCompilerABI.cpp.o -o cmTC_1da07 ]
+        ignore line: [Using built-in specs.]
+        ignore line: [COLLECT_GCC=g++]
+        ignore line: [COLLECT_LTO_WRAPPER=/opt/rh/gcc-toolset-13/root/usr/libexec/gcc/x86_64-redhat-linux/13/lto-wrapper]
+        ignore line: [OFFLOAD_TARGET_NAMES=nvptx-none]
+        ignore line: [OFFLOAD_TARGET_DEFAULT=1]
+        ignore line: [Target: x86_64-redhat-linux]
+        ignore line: [Configured with: ../configure --enable-bootstrap --enable-languages=c c++ fortran lto --prefix=/opt/rh/gcc-toolset-13/root/usr --mandir=/opt/rh/gcc-toolset-13/root/usr/share/man --infodir=/opt/rh/gcc-toolset-13/root/usr/share/info --with-bugurl=http://bugzilla.redhat.com/bugzilla --enable-shared --enable-threads=posix --enable-checking=release --enable-multilib --with-system-zlib --enable-__cxa_atexit --disable-libunwind-exceptions --enable-gnu-unique-object --enable-linker-build-id --with-gcc-major-version-only --enable-libstdcxx-backtrace --with-libstdcxx-zoneinfo=/usr/share/zoneinfo --with-linker-hash-style=gnu --enable-plugin --enable-initfini-array --without-isl --enable-offload-targets=nvptx-none --without-cuda-driver --enable-offload-defaulted --enable-gnu-indirect-function --enable-cet --with-tune=generic --with-arch_64=x86-64-v2 --with-arch_32=x86-64 --build=x86_64-redhat-linux --with-build-config=bootstrap-lto --enable-link-serialization=1]
+        ignore line: [Thread model: posix]
+        ignore line: [Supported LTO compression algorithms: zlib zstd]
+        ignore line: [gcc version 13.3.1 20240611 (Red Hat 13.3.1-2) (GCC) ]
+        ignore line: [COMPILER_PATH=/opt/rh/gcc-toolset-13/root/usr/libexec/gcc/x86_64-redhat-linux/13/:/opt/rh/gcc-toolset-13/root/usr/libexec/gcc/x86_64-redhat-linux/13/:/opt/rh/gcc-toolset-13/root/usr/libexec/gcc/x86_64-redhat-linux/:/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/:/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/]
+        ignore line: [LIBRARY_PATH=/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/:/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/../../../../lib64/:/lib/../lib64/:/usr/lib/../lib64/:/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/../../../:/lib/:/usr/lib/]
+        ignore line: [COLLECT_GCC_OPTIONS='-march=znver3' '-D' '__CRAY_X86_MILAN' '-D' '__CRAY_NVIDIA80' '-D' '__CRAYXT_COMPUTE_LINUX_TARGET' '-D' '__TARGET_LINUX__' '-v' '-o' 'cmTC_1da07' '-I' '/opt/cray/pe/dsmml/0.3.1/dsmml/include' '-I' '/opt/cray/pe/libsci/25.03.0/GNU/12.2/x86_64/include' '-I' '/opt/cray/pe/mpich/8.1.32/ofi/gnu/11.2/include' '-L/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/lib64' '-L/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/nvvm/lib64' '-L/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/extras/CUPTI/lib64' '-L/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/math_libs/12.8/lib64' '-L/opt/cray/pe/dsmml/0.3.1/dsmml/lib' '-L/opt/cray/pe/libsci/25.03.0/GNU/12.2/x86_64/lib' '-L/opt/cray/pe/mpich/8.1.32/ofi/gnu/11.2/lib' '-L/opt/cray/pe/mpich/8.1.32/gtl/lib' '-shared-libgcc' '-dumpdir' 'cmTC_1da07.']
+        link line: [ /opt/rh/gcc-toolset-13/root/usr/libexec/gcc/x86_64-redhat-linux/13/collect2 -plugin /opt/rh/gcc-toolset-13/root/usr/libexec/gcc/x86_64-redhat-linux/13/liblto_plugin.so -plugin-opt=/opt/rh/gcc-toolset-13/root/usr/libexec/gcc/x86_64-redhat-linux/13/lto-wrapper -plugin-opt=-fresolution=/tmp/cc8LPFd0.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --no-add-needed --eh-frame-hdr --hash-style=gnu -m elf_x86_64 -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o cmTC_1da07 /lib/../lib64/crt1.o /lib/../lib64/crti.o /opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/crtbegin.o -L/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/lib64 -L/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/nvvm/lib64 -L/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/extras/CUPTI/lib64 -L/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/math_libs/12.8/lib64 -L/opt/cray/pe/dsmml/0.3.1/dsmml/lib -L/opt/cray/pe/libsci/25.03.0/GNU/12.2/x86_64/lib -L/opt/cray/pe/mpich/8.1.32/ofi/gnu/11.2/lib -L/opt/cray/pe/mpich/8.1.32/gtl/lib -L/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13 -L/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/../../../../lib64 -L/lib/../lib64 -L/usr/lib/../lib64 -L/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/../../.. CMakeFiles/cmTC_1da07.dir/CMakeCXXCompilerABI.cpp.o -Bdynamic --as-needed -lcupti -lcudart --no-as-needed -lcuda --as-needed -ldsmml --no-as-needed --as-needed -lsci_gnu_mpi --no-as-needed -lmpi_gtl_cuda --as-needed -lsci_gnu --no-as-needed -ldl --as-needed -lmpi_gnu_112 --no-as-needed -lmpi_gtl_cuda --as-needed -lgfortran -lquadmath --no-as-needed --as-needed -lmvec --no-as-needed --as-needed -lm --no-as-needed --as-needed -lpthread --no-as-needed --disable-new-dtags -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/crtend.o /lib/../lib64/crtn.o]
+          arg [/opt/rh/gcc-toolset-13/root/usr/libexec/gcc/x86_64-redhat-linux/13/collect2] ==> ignore
+          arg [-plugin] ==> ignore
+          arg [/opt/rh/gcc-toolset-13/root/usr/libexec/gcc/x86_64-redhat-linux/13/liblto_plugin.so] ==> ignore
+          arg [-plugin-opt=/opt/rh/gcc-toolset-13/root/usr/libexec/gcc/x86_64-redhat-linux/13/lto-wrapper] ==> ignore
+          arg [-plugin-opt=-fresolution=/tmp/cc8LPFd0.res] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+          arg [-plugin-opt=-pass-through=-lc] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+          arg [--build-id] ==> ignore
+          arg [--no-add-needed] ==> ignore
+          arg [--eh-frame-hdr] ==> ignore
+          arg [--hash-style=gnu] ==> ignore
+          arg [-m] ==> ignore
+          arg [elf_x86_64] ==> ignore
+          arg [-dynamic-linker] ==> ignore
+          arg [/lib64/ld-linux-x86-64.so.2] ==> ignore
+          arg [-o] ==> ignore
+          arg [cmTC_1da07] ==> ignore
+          arg [/lib/../lib64/crt1.o] ==> obj [/lib/../lib64/crt1.o]
+          arg [/lib/../lib64/crti.o] ==> obj [/lib/../lib64/crti.o]
+          arg [/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/crtbegin.o] ==> obj [/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/crtbegin.o]
+          arg [-L/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/lib64] ==> dir [/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/lib64]
+          arg [-L/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/nvvm/lib64] ==> dir [/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/nvvm/lib64]
+          arg [-L/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/extras/CUPTI/lib64] ==> dir [/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/extras/CUPTI/lib64]
+          arg [-L/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/math_libs/12.8/lib64] ==> dir [/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/math_libs/12.8/lib64]
+          arg [-L/opt/cray/pe/dsmml/0.3.1/dsmml/lib] ==> dir [/opt/cray/pe/dsmml/0.3.1/dsmml/lib]
+          arg [-L/opt/cray/pe/libsci/25.03.0/GNU/12.2/x86_64/lib] ==> dir [/opt/cray/pe/libsci/25.03.0/GNU/12.2/x86_64/lib]
+          arg [-L/opt/cray/pe/mpich/8.1.32/ofi/gnu/11.2/lib] ==> dir [/opt/cray/pe/mpich/8.1.32/ofi/gnu/11.2/lib]
+          arg [-L/opt/cray/pe/mpich/8.1.32/gtl/lib] ==> dir [/opt/cray/pe/mpich/8.1.32/gtl/lib]
+          arg [-L/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13] ==> dir [/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13]
+          arg [-L/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/../../../../lib64] ==> dir [/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/../../../../lib64]
+          arg [-L/lib/../lib64] ==> dir [/lib/../lib64]
+          arg [-L/usr/lib/../lib64] ==> dir [/usr/lib/../lib64]
+          arg [-L/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/../../..] ==> dir [/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/../../..]
+          arg [CMakeFiles/cmTC_1da07.dir/CMakeCXXCompilerABI.cpp.o] ==> ignore
+          arg [-Bdynamic] ==> search dynamic
+          arg [--as-needed] ==> ignore
+          arg [-lcupti] ==> lib [cupti]
+          arg [-lcudart] ==> lib [cudart]
+          arg [--no-as-needed] ==> ignore
+          arg [-lcuda] ==> lib [cuda]
+          arg [--as-needed] ==> ignore
+          arg [-ldsmml] ==> lib [dsmml]
+          arg [--no-as-needed] ==> ignore
+          arg [--as-needed] ==> ignore
+          arg [-lsci_gnu_mpi] ==> lib [sci_gnu_mpi]
+          arg [--no-as-needed] ==> ignore
+          arg [-lmpi_gtl_cuda] ==> lib [mpi_gtl_cuda]
+          arg [--as-needed] ==> ignore
+          arg [-lsci_gnu] ==> lib [sci_gnu]
+          arg [--no-as-needed] ==> ignore
+          arg [-ldl] ==> lib [dl]
+          arg [--as-needed] ==> ignore
+          arg [-lmpi_gnu_112] ==> lib [mpi_gnu_112]
+          arg [--no-as-needed] ==> ignore
+          arg [-lmpi_gtl_cuda] ==> lib [mpi_gtl_cuda]
+          arg [--as-needed] ==> ignore
+          arg [-lgfortran] ==> lib [gfortran]
+          arg [-lquadmath] ==> lib [quadmath]
+          arg [--no-as-needed] ==> ignore
+          arg [--as-needed] ==> ignore
+          arg [-lmvec] ==> lib [mvec]
+          arg [--no-as-needed] ==> ignore
+          arg [--as-needed] ==> ignore
+          arg [-lm] ==> lib [m]
+          arg [--no-as-needed] ==> ignore
+          arg [--as-needed] ==> ignore
+          arg [-lpthread] ==> lib [pthread]
+          arg [--no-as-needed] ==> ignore
+          arg [--disable-new-dtags] ==> ignore
+          arg [-lstdc++] ==> lib [stdc++]
+          arg [-lm] ==> lib [m]
+          arg [-lgcc_s] ==> lib [gcc_s]
+          arg [-lgcc] ==> lib [gcc]
+          arg [-lc] ==> lib [c]
+          arg [-lgcc_s] ==> lib [gcc_s]
+          arg [-lgcc] ==> lib [gcc]
+          arg [/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/crtend.o] ==> obj [/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/crtend.o]
+          arg [/lib/../lib64/crtn.o] ==> obj [/lib/../lib64/crtn.o]
+        collapse obj [/lib/../lib64/crt1.o] ==> [/lib64/crt1.o]
+        collapse obj [/lib/../lib64/crti.o] ==> [/lib64/crti.o]
+        collapse obj [/lib/../lib64/crtn.o] ==> [/lib64/crtn.o]
+        collapse library dir [/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/lib64] ==> [/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/lib64]
+        collapse library dir [/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/nvvm/lib64] ==> [/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/nvvm/lib64]
+        collapse library dir [/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/extras/CUPTI/lib64] ==> [/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/extras/CUPTI/lib64]
+        collapse library dir [/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/math_libs/12.8/lib64] ==> [/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/math_libs/12.8/lib64]
+        collapse library dir [/opt/cray/pe/dsmml/0.3.1/dsmml/lib] ==> [/opt/cray/pe/dsmml/0.3.1/dsmml/lib]
+        collapse library dir [/opt/cray/pe/libsci/25.03.0/GNU/12.2/x86_64/lib] ==> [/opt/cray/pe/libsci/25.03.0/GNU/12.2/x86_64/lib]
+        collapse library dir [/opt/cray/pe/mpich/8.1.32/ofi/gnu/11.2/lib] ==> [/opt/cray/pe/mpich/8.1.32/ofi/gnu/11.2/lib]
+        collapse library dir [/opt/cray/pe/mpich/8.1.32/gtl/lib] ==> [/opt/cray/pe/mpich/8.1.32/gtl/lib]
+        collapse library dir [/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13] ==> [/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13]
+        collapse library dir [/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/../../../../lib64] ==> [/opt/rh/gcc-toolset-13/root/usr/lib64]
+        collapse library dir [/lib/../lib64] ==> [/lib64]
+        collapse library dir [/usr/lib/../lib64] ==> [/usr/lib64]
+        collapse library dir [/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/../../..] ==> [/opt/rh/gcc-toolset-13/root/usr/lib]
+        implicit libs: [cupti;cudart;cuda;dsmml;sci_gnu_mpi;mpi_gtl_cuda;sci_gnu;dl;mpi_gnu_112;mpi_gtl_cuda;gfortran;quadmath;mvec;m;pthread;stdc++;m;gcc_s;gcc;c;gcc_s;gcc]
+        implicit objs: [/lib64/crt1.o;/lib64/crti.o;/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/crtbegin.o;/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13/crtend.o;/lib64/crtn.o]
+        implicit dirs: [/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/lib64;/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/nvvm/lib64;/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/cuda/12.8/extras/CUPTI/lib64;/opt/nvidia/hpc_sdk/Linux_x86_64/25.3/math_libs/12.8/lib64;/opt/cray/pe/dsmml/0.3.1/dsmml/lib;/opt/cray/pe/libsci/25.03.0/GNU/12.2/x86_64/lib;/opt/cray/pe/mpich/8.1.32/ofi/gnu/11.2/lib;/opt/cray/pe/mpich/8.1.32/gtl/lib;/opt/rh/gcc-toolset-13/root/usr/lib/gcc/x86_64-redhat-linux/13;/opt/rh/gcc-toolset-13/root/usr/lib64;/lib64;/usr/lib64;/opt/rh/gcc-toolset-13/root/usr/lib]
+        implicit fwks: []
+      
+      
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/Internal/CheckSourceCompiles.cmake:101 (try_compile)"
+      - "/usr/share/cmake/Modules/CheckCSourceCompiles.cmake:76 (cmake_check_source_compiles)"
+      - "/usr/share/cmake/Modules/FindThreads.cmake:97 (CHECK_C_SOURCE_COMPILES)"
+      - "/usr/share/cmake/Modules/FindThreads.cmake:163 (_threads_check_libc)"
+      - "/usr/share/cmake/Modules/FindCUDAToolkit.cmake:1043 (find_package)"
+      - "/usr/share/cmake/Modules/CMakeFindDependencyMacro.cmake:76 (find_package)"
+      - "/u/ajain18/hapi_hip/shogo/charm/kokkos/install/lib64/cmake/Kokkos/KokkosConfig.cmake:39 (FIND_DEPENDENCY)"
+      - "CMakeLists.txt:7 (find_package)"
+    checks:
+      - "Performing Test CMAKE_HAVE_LIBC_PTHREAD"
+    directories:
+      source: "/u/ajain18/jacobi2d/build/CMakeFiles/CMakeScratch/TryCompile-4jPfvI"
+      binary: "/u/ajain18/jacobi2d/build/CMakeFiles/CMakeScratch/TryCompile-4jPfvI"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+    buildResult:
+      variable: "CMAKE_HAVE_LIBC_PTHREAD"
+      cached: true
+      stdout: |
+        Change Dir: /u/ajain18/jacobi2d/build/CMakeFiles/CMakeScratch/TryCompile-4jPfvI
+        
+        Run Build Command(s):/usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_9e047/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_9e047.dir/build.make CMakeFiles/cmTC_9e047.dir/build
+        gmake[1]: Entering directory '/u/ajain18/jacobi2d/build/CMakeFiles/CMakeScratch/TryCompile-4jPfvI'
+        Building C object CMakeFiles/cmTC_9e047.dir/src.c.o
+        /opt/cray/pe/craype/2.7.34/bin/cc -DCMAKE_HAVE_LIBC_PTHREAD   -o CMakeFiles/cmTC_9e047.dir/src.c.o -c /u/ajain18/jacobi2d/build/CMakeFiles/CMakeScratch/TryCompile-4jPfvI/src.c
+        Linking C executable cmTC_9e047
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_9e047.dir/link.txt --verbose=1
+        /opt/cray/pe/craype/2.7.34/bin/cc CMakeFiles/cmTC_9e047.dir/src.c.o -o cmTC_9e047 
+        gmake[1]: Leaving directory '/u/ajain18/jacobi2d/build/CMakeFiles/CMakeScratch/TryCompile-4jPfvI'
+        
+      exitCode: 0
+...

@@ -1,0 +1,4 @@
+/u/ajain18/jacobi2d/build/CMakeFiles/jacobi2d.dir
+/u/ajain18/jacobi2d/build/CMakeFiles/result.dir
+/u/ajain18/jacobi2d/build/CMakeFiles/edit_cache.dir
+/u/ajain18/jacobi2d/build/CMakeFiles/rebuild_cache.dir
