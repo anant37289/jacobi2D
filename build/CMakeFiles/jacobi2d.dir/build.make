@@ -71,21 +71,21 @@ include CMakeFiles/jacobi2d.dir/flags.make
 
 /u/ajain18/jacobi2d/jacobi2d.decl.h: /u/ajain18/jacobi2d/jacobi2d.ci
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/u/ajain18/jacobi2d/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Processing jacobi2d ci files"
-	/usr/bin/cmake -E chdir /u/ajain18/jacobi2d /u/ajain18/charm/netlrts-linux-x86_64-cuda/bin/charmc /u/ajain18/jacobi2d/jacobi2d.ci
+	/usr/bin/cmake -E chdir /u/ajain18/jacobi2d /u/ajain18/charm/netlrts-linux-x86_64/bin/charmc /u/ajain18/jacobi2d/jacobi2d.ci
 
 CMakeFiles/jacobi2d.dir/jacobi2d.C.o: CMakeFiles/jacobi2d.dir/flags.make
 CMakeFiles/jacobi2d.dir/jacobi2d.C.o: /u/ajain18/jacobi2d/jacobi2d.C
 CMakeFiles/jacobi2d.dir/jacobi2d.C.o: CMakeFiles/jacobi2d.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/u/ajain18/jacobi2d/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/jacobi2d.dir/jacobi2d.C.o"
-	/u/ajain18/hapi_hip/shogo/charm/kokkos/install/bin/kokkos_launch_compiler /u/ajain18/hapi_hip/shogo/charm/kokkos/install/bin/nvcc_wrapper /opt/cray/pe/craype/2.7.34/bin/CC /opt/cray/pe/craype/2.7.34/bin/CC $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/jacobi2d.dir/jacobi2d.C.o -MF CMakeFiles/jacobi2d.dir/jacobi2d.C.o.d -o CMakeFiles/jacobi2d.dir/jacobi2d.C.o -c /u/ajain18/jacobi2d/jacobi2d.C
+	hipcc $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/jacobi2d.dir/jacobi2d.C.o -MF CMakeFiles/jacobi2d.dir/jacobi2d.C.o.d -o CMakeFiles/jacobi2d.dir/jacobi2d.C.o -c /u/ajain18/jacobi2d/jacobi2d.C
 
 CMakeFiles/jacobi2d.dir/jacobi2d.C.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/jacobi2d.dir/jacobi2d.C.i"
-	/opt/cray/pe/craype/2.7.34/bin/CC $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /u/ajain18/jacobi2d/jacobi2d.C > CMakeFiles/jacobi2d.dir/jacobi2d.C.i
+	hipcc $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /u/ajain18/jacobi2d/jacobi2d.C > CMakeFiles/jacobi2d.dir/jacobi2d.C.i
 
 CMakeFiles/jacobi2d.dir/jacobi2d.C.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/jacobi2d.dir/jacobi2d.C.s"
-	/opt/cray/pe/craype/2.7.34/bin/CC $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /u/ajain18/jacobi2d/jacobi2d.C -o CMakeFiles/jacobi2d.dir/jacobi2d.C.s
+	hipcc $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /u/ajain18/jacobi2d/jacobi2d.C -o CMakeFiles/jacobi2d.dir/jacobi2d.C.s
 
 jacobi2d: CMakeFiles/jacobi2d.dir/jacobi2d.C.o
 jacobi2d: CMakeFiles/jacobi2d.dir/build.make

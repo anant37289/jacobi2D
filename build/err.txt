@@ -1,5 +1,0 @@
-
-Compilation terminated.
-make[2]: *** [CMakeFiles/jacobi2d.dir/build.make:80: CMakeFiles/jacobi2d.dir/jacobi2d.C.o] Error 4
-make[1]: *** [CMakeFiles/Makefile2:85: CMakeFiles/jacobi2d.dir/all] Interrupt
-make: *** [Makefile:91: all] Interrupt

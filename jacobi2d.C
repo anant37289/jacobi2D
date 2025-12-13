@@ -7,7 +7,22 @@
 #include <Kokkos_Core.hpp>
 
 #define COMM_ONLY 0
-#define cuda_SYNC 0
+#define hapi_SYNC 0
+
+using ExecSpace = Kokkos::DefaultExecutionSpace;
+using RangePolicy = Kokkos::RangePolicy<ExecSpace>;
+using MDRangePolicy = Kokkos::MDRangePolicy<Kokkos::Rank<2>, ExecSpace>;
+using HostMemSpace = Kokkos::HostSpace;
+#ifdef GPU_BACKEND
+  #ifdef KOKKOS_ENABLE_CUDA
+  using HostPinnedSpace = Kokkos::CudaHostPinnedSpace;
+  #endif
+  #ifdef KOKKOS_ENABLE_HIP
+  using HostPinnedSpace = Kokkos::HIPHostPinnedSpace;
+  #endif
+#else
+  using HostPinnedSpace = HostMemSpace;
+#endif
 
 /* readonly */ CProxy_Main main_proxy;
 /* readonly */ CProxy_Block block_proxy;
@@ -104,7 +119,7 @@ public:
     n_chares_y = grid_height / block_height;
 
     // Print configuration
-    CkPrintf("\n[cuda 2D Jacobi example]\n");
+    CkPrintf("\n[hapi 2D Jacobi example]\n");
     CkPrintf("Grid: %d x %d, Block: %d x %d, Chares: %d x %d, Iterations: %d, "
         "Warm-up: %d, Bulk-synchronous: %d, Zerocopy: %d, Print: %d\n\n",
         grid_width, grid_height, block_width, block_height, n_chares_x, n_chares_y,
@@ -168,11 +183,6 @@ public:
   }
 };
 
-using ExecSpace = Kokkos::DefaultExecutionSpace;
-using RangePolicy = Kokkos::RangePolicy<ExecSpace>;
-using MDRangePolicy = Kokkos::MDRangePolicy<Kokkos::Rank<2>, ExecSpace>;
-using HostMemSpace = Kokkos::HostSpace;
-using HostPinnedSpace = Kokkos::CudaHostPinnedSpace;
 using DeviceMemSpace = ExecSpace::memory_space;
 
 void invokeInitKernel(Kokkos::View<DataType*, DeviceMemSpace> d_temperature, int block_width, int block_height, ExecSpace exec_space) {
@@ -183,7 +193,7 @@ void invokeInitKernel(Kokkos::View<DataType*, DeviceMemSpace> d_temperature, int
   //     KOKKOS_LAMBDA(int i, int j) { d_temperature(IDX(i, j)) = 0; });
   Kokkos::deep_copy(exec_space, d_temperature,0);
 
-  hapiCheck(cudaPeekAtLastError());
+  hapiCheck(hapiPeekAtLastError());
 }
 
 void invokeBoundaryKernels(Kokkos::View<DataType*, DeviceMemSpace> d_temperature, int block_width,
@@ -210,7 +220,7 @@ void invokeBoundaryKernels(Kokkos::View<DataType*, DeviceMemSpace> d_temperature
         "bottomBoundaryKernel",
         RangePolicy(exec_space, 0, block_width), KOKKOS_LAMBDA(int i) { d_temperature(IDX(1 + i, block_height + 1)) = 1; });
   }
-  hapiCheck(cudaPeekAtLastError());
+  hapiCheck(hapiPeekAtLastError());
 }
 
 void invokeJacobiKernel(Kokkos::View<DataType*, DeviceMemSpace> d_temperature, Kokkos::View<DataType*, DeviceMemSpace> d_new_temperature,
@@ -225,7 +235,7 @@ void invokeJacobiKernel(Kokkos::View<DataType*, DeviceMemSpace> d_temperature, K
           0.2;
       });
   
-  hapiCheck(cudaPeekAtLastError());
+  hapiCheck(hapiPeekAtLastError());
 }
 
 void invokePackingKernels(Kokkos::View<DataType*, DeviceMemSpace> d_temperature, Kokkos::View<DataType*, 
@@ -247,7 +257,7 @@ void invokePackingKernels(Kokkos::View<DataType*, DeviceMemSpace> d_temperature,
           d_right_ghost(j) = d_temperature(IDX(block_width, 1 + j));
         });
   }
-  hapiCheck(cudaPeekAtLastError());
+  hapiCheck(hapiPeekAtLastError());
 }
 
 void invokeUnpackingKernel(Kokkos::View<DataType*, DeviceMemSpace> d_temperature, Kokkos::View<DataType*, DeviceMemSpace> d_ghost,
@@ -267,7 +277,7 @@ void invokeUnpackingKernel(Kokkos::View<DataType*, DeviceMemSpace> d_temperature
           d_temperature(IDX(block_width + 1, 1 + j)) = d_ghost(j);
         });
   }
-  hapiCheck(cudaPeekAtLastError());
+  hapiCheck(hapiPeekAtLastError());
 }
 
 class Block : public CBase_Block {
@@ -279,11 +289,11 @@ class Block : public CBase_Block {
   int remote_count;
   int x, y;
 
-  Kokkos::View<DataType*, HostMemSpace> h_temperature;
-  Kokkos::View<DataType*, HostMemSpace> h_left_ghost;
-  Kokkos::View<DataType*, HostMemSpace> h_right_ghost;
-  Kokkos::View<DataType*, HostMemSpace> h_top_ghost;
-  Kokkos::View<DataType*, HostMemSpace> h_bottom_ghost;
+  Kokkos::View<DataType*, HostPinnedSpace> h_temperature;
+  Kokkos::View<DataType*, HostPinnedSpace> h_left_ghost;
+  Kokkos::View<DataType*, HostPinnedSpace> h_right_ghost;
+  Kokkos::View<DataType*, HostPinnedSpace> h_top_ghost;
+  Kokkos::View<DataType*, HostPinnedSpace> h_bottom_ghost;
 
   Kokkos::View<DataType*, DeviceMemSpace> d_temperature;
   Kokkos::View<DataType*, DeviceMemSpace> d_new_temperature;
@@ -296,25 +306,25 @@ class Block : public CBase_Block {
   Kokkos::View<DataType*, DeviceMemSpace> d_recv_left_ghost;
   Kokkos::View<DataType*, DeviceMemSpace> d_recv_right_ghost;
 
-  cudaStream_t compute_stream;
-  cudaStream_t comm_stream;
+  hapiStream_t compute_stream;
+  hapiStream_t comm_stream;
 
   ExecSpace comm_space;
   ExecSpace compute_space;
 
-  cudaEvent_t compute_event;
-  cudaEvent_t comm_event;
+  hapiEvent_t compute_event;
+  hapiEvent_t comm_event;
 
   bool left_bound, right_bound, top_bound, bottom_bound;
 
   Block() {}
 
   ~Block() {
-    hapiCheck(cudaStreamDestroy(compute_stream));
-    hapiCheck(cudaStreamDestroy(comm_stream));
+    hapiCheck(hapiStreamDestroy(compute_stream));
+    hapiCheck(hapiStreamDestroy(comm_stream));
 
-    hapiCheck(cudaEventDestroy(compute_event));
-    hapiCheck(cudaEventDestroy(comm_event));
+    hapiCheck(hapiEventDestroy(compute_event));
+    hapiCheck(hapiEventDestroy(comm_event));
   }
 
   void init() {
@@ -348,17 +358,17 @@ class Block : public CBase_Block {
       neighbors++;
 
     h_temperature =
-        Kokkos::View<DataType*, HostMemSpace>(
+        Kokkos::View<DataType*, HostPinnedSpace>(
             "h_temperature",
             (block_width + 2) * (block_height + 2));
 
-    h_left_ghost = Kokkos::View<DataType*, HostMemSpace>("h_left_ghost", block_height);
+    h_left_ghost = Kokkos::View<DataType*, HostPinnedSpace>("h_left_ghost", block_height);
 
-    h_right_ghost = Kokkos::View<DataType*, HostMemSpace>("h_right_ghost", block_height);
+    h_right_ghost = Kokkos::View<DataType*, HostPinnedSpace>("h_right_ghost", block_height);
 
-    h_top_ghost = Kokkos::View<DataType*, HostMemSpace>("h_top_ghost", block_width);
+    h_top_ghost = Kokkos::View<DataType*, HostPinnedSpace>("h_top_ghost", block_width);
 
-    h_bottom_ghost = Kokkos::View<DataType*, HostMemSpace>("h_bottom_ghost", block_width);
+    h_bottom_ghost = Kokkos::View<DataType*, HostPinnedSpace>("h_bottom_ghost", block_width);
 
 
     // ---- Device allocations (GPU/ExecSpace device) ----
@@ -403,14 +413,14 @@ class Block : public CBase_Block {
             Kokkos::View<DataType*, DeviceMemSpace>("d_recv_right_ghost", block_height);
     }
 
-    hapiCheck(cudaStreamCreateWithPriority(&compute_stream, cudaStreamDefault, 0));
-    hapiCheck(cudaStreamCreateWithPriority(&comm_stream, cudaStreamDefault, -1));
+    hapiCheck(hapiStreamCreateWithPriority(&compute_stream, hapiStreamDefault, 0));
+    hapiCheck(hapiStreamCreateWithPriority(&comm_stream, hapiStreamDefault, -1));
 
     compute_space = ExecSpace(compute_stream); 
     comm_space = ExecSpace(comm_stream);
 
-    hapiCheck(cudaEventCreateWithFlags(&compute_event, cudaEventDisableTiming));
-    hapiCheck(cudaEventCreateWithFlags(&comm_event, cudaEventDisableTiming));
+    hapiCheck(hapiEventCreateWithFlags(&compute_event, hapiEventDisableTiming));
+    hapiCheck(hapiEventCreateWithFlags(&comm_event, hapiEventDisableTiming));
 
     // Initialize temperature data
     invokeInitKernel(d_temperature, block_width, block_height, compute_space);
@@ -422,8 +432,8 @@ class Block : public CBase_Block {
     invokeBoundaryKernels(d_new_temperature, block_width, block_height, left_bound,
         right_bound, top_bound, bottom_bound, compute_space);
 
-#if cuda_SYNC
-    cudaStreamSynchronize(compute_stream);
+#if hapi_SYNC
+    hapiStreamSynchronize(compute_stream);
     thisProxy[thisIndex].initDone();
 #else
     // TODO: Support reduction callback in hapiAddCallback
@@ -443,8 +453,8 @@ class Block : public CBase_Block {
 
     // Operations in compute stream should only be executed when
     // operations in communication stream (transfers and unpacking) complete
-    hapiCheck(cudaEventRecord(comm_event, comm_stream));
-    hapiCheck(cudaStreamWaitEvent(compute_stream, comm_event, 0));
+    hapiCheck(hapiEventRecord(comm_event, comm_stream));
+    hapiCheck(hapiStreamWaitEvent(compute_stream, comm_event, 0));
 
 #if !COMM_ONLY
     // Invoke GPU kernel for Jacobi computation
@@ -454,8 +464,8 @@ class Block : public CBase_Block {
 
     // Operations in communication stream (packing and transfers) should
     // only be executed when operations in compute stream complete
-    hapiCheck(cudaEventRecord(compute_event, compute_stream));
-    hapiCheck(cudaStreamWaitEvent(comm_stream, compute_event, 0));
+    hapiCheck(hapiEventRecord(compute_event, compute_stream));
+    hapiCheck(hapiStreamWaitEvent(comm_stream, compute_event, 0));
 
     // Copy final temperature data back to host
     if (print_elements && (my_iter == warmup_iters + n_iters)) {
@@ -463,8 +473,8 @@ class Block : public CBase_Block {
     }
 
     if (sync_ver) {
-#if cuda_SYNC
-      cudaStreamSynchronize(compute_stream);
+#if hapi_SYNC
+      hapiStreamSynchronize(compute_stream);
       thisProxy[thisIndex].updateDone();
 #else
       CkCallback* cb = new CkCallback(CkIndex_Block::updateDone(), thisProxy[thisIndex]);
@@ -544,8 +554,8 @@ class Block : public CBase_Block {
       }
     }
 
-#if cuda_SYNC
-    cudaStreamSynchronize(comm_stream);
+#if hapi_SYNC
+    hapiStreamSynchronize(comm_stream);
     thisProxy[thisIndex].packGhostsDone();
 #else
     // Add asynchronous callback to be invoked when packing kernels and
@@ -605,7 +615,7 @@ class Block : public CBase_Block {
       default:
         CkAbort("Error: invalid direction");
     }
-    devicePost[0].cuda_stream = comm_stream;
+    devicePost[0].hapi_stream = comm_stream;
   }
 
   void processGhostsZC(int dir, int size, DataType* gh) {

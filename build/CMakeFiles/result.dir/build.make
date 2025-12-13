@@ -70,7 +70,7 @@ CMakeFiles/result: jacobi2d.out
 
 jacobi2d.out:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/u/ajain18/jacobi2d/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Linking charm build against kokkos and cuda"
-	/u/ajain18/charm/netlrts-linux-x86_64-cuda/bin/charmc -O3 -language charm++ -L/u/ajain18/hapi_hip/shogo/charm/kokkos/install/lib64 -L/u/ajain18/hapi_hip/shogo/charm/kokkos-kernels/install/lib64 -lkokkoscore -lkokkoscontainers -lkokkoskernels -L -lcuda -lcudart -lcusparse -lcublas /u/ajain18/jacobi2d/build/CMakeFiles/jacobi2d.dir/jacobi2d.C.o -o /u/ajain18/jacobi2d/build/jacobi2d.out
+	/u/ajain18/charm/netlrts-linux-x86_64/bin/charmc -O3 -language charm++ -L/u/ajain18/belobench/LibCharmtyles/kokkos/install_hip/lib64 -lkokkoscore -lkokkoscontainers /u/ajain18/jacobi2d/build/CMakeFiles/jacobi2d.dir/jacobi2d.C.o -o /u/ajain18/jacobi2d/build/jacobi2d.out
 
 result: CMakeFiles/result
 result: jacobi2d.out

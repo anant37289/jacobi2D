@@ -6,13 +6,19 @@ include(${CMAKE_SOURCE_DIR}/config.cmk)
 set(Kokkos_ROOT ${KOKKOS_DIR})
 find_package(Kokkos 4.5 REQUIRED CONFIG)
 
-#set(KokkosKernels_DIR ${KOKKOS_KERNELS_DIR}/lib64/cmake/KokkosKernels)
-#find_package(KokkosKernels REQUIRED)
 
 if(Charm_ENABLE_GPU)
     message(STATUS "Building for a GPU backend")
     add_definitions(-DGPU_BACKEND)
-    add_definitions(-DCUDA_DIR=\"${CUDA_DIR}\")
+
+    if(Kokkos_ENABLE_CUDA)
+        message(STATUS "Kokkos Backend: CUDA")
+        add_definitions(-DCUDA_DIR=\"${CUDA_DIR}\")
+    elseif(Kokkos_ENABLE_HIP)
+        message(STATUS "Kokkos Backend: HIP")
+        set(CMAKE_CXX_COMPILER hipcc)
+    endif()
+
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GPU_OPTS} ${LD_OPTS}")
 else()
     message(STATUS "Building for a CPU backend")
