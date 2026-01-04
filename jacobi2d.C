@@ -40,6 +40,23 @@ using HostMemSpace = Kokkos::HostSpace;
 
 enum Direction { LEFT = 1, RIGHT, TOP, BOTTOM };
 
+class KokkosGroup : public CBase_KokkosGroup
+{
+public:
+    KokkosGroup()
+    {
+        Kokkos::initialize();
+        #ifdef GPU_BACKEND
+        hapiCheck(cudaSetDevice(CkMyPe()));//later make RR on gpus
+        auto start = CkTimer();
+        hapiCreateStreams();
+        ckout << "Time to create streams " <<CkTimer() - start << endl;
+        #endif
+    }
+};
+
+CProxy_KokkosGroup kokkosMgmt;
+
 class Main : public CBase_Main {
   int my_iter;
   double init_start_time;
@@ -51,8 +68,8 @@ class Main : public CBase_Main {
 
 public:
   Main(CkArgMsg* m) {
-    Kokkos::initialize();
     // Set default values
+    kokkosMgmt = CProxy_KokkosGroup::ckNew();
     main_proxy = thisProxy;
     grid_width = 16384;
     grid_height = 16384;

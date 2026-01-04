@@ -83,4 +83,8 @@ mainmodule jacobi2d {
 
     entry void print();
   };
+  nodegroup KokkosGroup {
+      entry KokkosGroup();
+  };
+
 };

@@ -43,7 +43,7 @@ if(Charm_ENABLE_GPU)
 
     add_custom_command(
         OUTPUT "${CMAKE_BINARY_DIR}/jacobi2d.out"
-        COMMAND ${CHARMC} ${GPU_LINK_OPTS} $<TARGET_OBJECTS:jacobi2d> -o ${CMAKE_BINARY_DIR}/jacobi2d.out
+        COMMAND ${CHARMC} $<TARGET_OBJECTS:jacobi2d> ${GPU_LINK_OPTS} -o ${CMAKE_BINARY_DIR}/jacobi2d.out
         DEPENDS jacobi2d
         COMMENT "Linking charm build against kokkos and cuda"
     )
