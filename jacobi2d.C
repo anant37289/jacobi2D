@@ -1,5 +1,4 @@
 #include "hapi.h"
-#include "hapi_nvtx.h"
 #include "jacobi2d.decl.h"
 #include "jacobi2d.h"
 #include <utility>
@@ -28,8 +27,7 @@ using HostMemSpace = Kokkos::HostSpace;
 /* readonly */ CProxy_Block block_proxy;
 /* readonly */ int grid_width;
 /* readonly */ int grid_height;
-/* readonly */ int block_width;
-/* readonly */ int block_height;
+// block_width and block_height are no longer global; computed per-chare
 /* readonly */ int n_chares_x;
 /* readonly */ int n_chares_y;
 /* readonly */ int n_iters;
@@ -45,9 +43,13 @@ class KokkosGroup : public CBase_KokkosGroup
 public:
     KokkosGroup()
     {
-        Kokkos::initialize();
         #ifdef GPU_BACKEND
-        hapiCheck(cudaSetDevice(CkMyPe()));//later make RR on gpus
+        int device;
+        hapiCheck(cudaGetDevice(&device));
+        Kokkos::InitializationSettings args_kokkos;
+        args_kokkos.set_device_id(device);
+        Kokkos::initialize(args_kokkos);
+        
         auto start = CkTimer();
         hapiCreateStreams();
         ckout << "Time to create streams " <<CkTimer() - start << endl;
@@ -73,8 +75,6 @@ public:
     main_proxy = thisProxy;
     grid_width = 16384;
     grid_height = 16384;
-    block_width = 4096;
-    block_height = 4096;
     n_iters = 100;
     warmup_iters = 10;
     use_zerocopy = false;
@@ -88,7 +88,9 @@ public:
 
     // Process arguments
     int c;
-    while ((c = getopt(m->argc, m->argv, "W:H:w:h:i:u:yzp")) != -1) {
+    int target_num_chares = 4;
+
+    while ((c = getopt(m->argc, m->argv, "W:H:i:u:N:yzp")) != -1) {
       switch (c) {
         case 'W':
           grid_width = atoi(optarg);
@@ -96,17 +98,14 @@ public:
         case 'H':
           grid_height = atoi(optarg);
           break;
-        case 'w':
-          block_width = atoi(optarg);
-          break;
-        case 'h':
-          block_height = atoi(optarg);
-          break;
         case 'i':
           n_iters = atoi(optarg);
           break;
         case 'u':
           warmup_iters = atoi(optarg);
+          break;
+        case 'N':
+          target_num_chares = atoi(optarg);
           break;
         case 'y':
           sync_ver = true;
@@ -119,7 +118,7 @@ public:
           break;
         default:
           CkPrintf(
-              "Usage: %s -W [grid width] -H [grid height] -w [block width] -h [block height]"
+              "Usage: %s -W [grid width] -H [grid height] -N [num chares]"
               "-i [iterations] -u [warmup] -y (use sync version) -z (use GPU zerocopy) -p (print blocks)\n",
               m->argv[0]);
           CkExit();
@@ -127,19 +126,25 @@ public:
     }
     delete m;
 
-    if (grid_width % block_width != 0 || grid_height % block_height != 0) {
-      CkAbort("Invalid grid & block configuration\n");
+    n_chares_x = 1; 
+    n_chares_y = target_num_chares;
+    for (int i = static_cast<int>(sqrt(target_num_chares)); i >= 1; i--) {
+      if (target_num_chares % i == 0) {
+        n_chares_x = i;
+        n_chares_y = target_num_chares / i;
+        break;
+      }
     }
 
-    // Number of chares per dimension
-    n_chares_x = grid_width / block_width;
-    n_chares_y = grid_height / block_height;
+    if (grid_width % n_chares_x != 0 || grid_height % n_chares_y != 0) {
+        CkPrintf("Note: Grid not evenly divisible by chares. Using non-uniform decomposition.\n");
+    }
 
     // Print configuration
     CkPrintf("\n[hapi 2D Jacobi example]\n");
-    CkPrintf("Grid: %d x %d, Block: %d x %d, Chares: %d x %d, Iterations: %d, "
+    CkPrintf("Grid: %d x %d, Chares: %d x %d, Iterations: %d, "
         "Warm-up: %d, Bulk-synchronous: %d, Zerocopy: %d, Print: %d\n\n",
-        grid_width, grid_height, block_width, block_height, n_chares_x, n_chares_y,
+        grid_width, grid_height, n_chares_x, n_chares_y,
         n_iters, warmup_iters, sync_ver, use_zerocopy, print_elements);
 
     // Create blocks and start iteration
@@ -191,11 +196,13 @@ public:
       sleep(1);
       block_proxy(0,0).print();
     } else {
+      Kokkos::finalize();
       CkExit();
     }
   }
 
   void printDone() {
+    Kokkos::finalize();
     CkExit();
   }
 };
@@ -203,11 +210,6 @@ public:
 using DeviceMemSpace = ExecSpace::memory_space;
 
 void invokeInitKernel(Kokkos::View<DataType*, DeviceMemSpace> d_temperature, int block_width, int block_height, ExecSpace exec_space) {
-  // Kokkos::parallel_for(
-  //     "invokeInitKernel",
-  //     MDRangePolicy(ExecSpace(stream),
-  //         {0, 0}, {block_width + 2, block_height + 2}),
-  //     KOKKOS_LAMBDA(int i, int j) { d_temperature(IDX(i, j)) = 0; });
   Kokkos::deep_copy(exec_space, d_temperature,0);
 
   hapiCheck(hapiPeekAtLastError());
@@ -216,39 +218,41 @@ void invokeInitKernel(Kokkos::View<DataType*, DeviceMemSpace> d_temperature, int
 void invokeBoundaryKernels(Kokkos::View<DataType*, DeviceMemSpace> d_temperature, int block_width,
     int block_height, bool left_bound, bool right_bound, bool top_bound,
     bool bottom_bound, ExecSpace exec_space) {
+  const int pitch = block_width + 2;
   if (left_bound) {
     Kokkos::parallel_for(
         "leftBoundaryKernel",
-        RangePolicy(exec_space, 0, block_height), KOKKOS_LAMBDA(int i) { d_temperature(IDX(0, 1 + i)) = 1; });
+        RangePolicy(exec_space, 0, block_height), KOKKOS_LAMBDA(int i) { d_temperature(IDX(0, 1 + i, pitch)) = 1; });
   }
   if (right_bound) {
     Kokkos::parallel_for(
         "rightBoundaryKernel",
-        RangePolicy(exec_space, 0, block_height), KOKKOS_LAMBDA(int i) { d_temperature(IDX(block_width + 1, 1 + i)) = 1; });
+        RangePolicy(exec_space, 0, block_height), KOKKOS_LAMBDA(int i) { d_temperature(IDX(block_width + 1, 1 + i, pitch)) = 1; });
   }
 
   if (top_bound) {
     Kokkos::parallel_for(
         "topBoundaryKernel",
-        RangePolicy(exec_space, 0, block_width), KOKKOS_LAMBDA(int i) { d_temperature(IDX(1 + i, 0)) = 1; });
+        RangePolicy(exec_space, 0, block_width), KOKKOS_LAMBDA(int i) { d_temperature(IDX(1 + i, 0, pitch)) = 1; });
   }
   if (bottom_bound) {
     Kokkos::parallel_for(
         "bottomBoundaryKernel",
-        RangePolicy(exec_space, 0, block_width), KOKKOS_LAMBDA(int i) { d_temperature(IDX(1 + i, block_height + 1)) = 1; });
+        RangePolicy(exec_space, 0, block_width), KOKKOS_LAMBDA(int i) { d_temperature(IDX(1 + i, block_height + 1, pitch)) = 1; });
   }
   hapiCheck(hapiPeekAtLastError());
 }
 
 void invokeJacobiKernel(Kokkos::View<DataType*, DeviceMemSpace> d_temperature, Kokkos::View<DataType*, DeviceMemSpace> d_new_temperature,
     int block_width, int block_height, ExecSpace exec_space) {
+  const int pitch = block_width + 2;
   Kokkos::parallel_for(
       "invokeJacobiKernel",
       MDRangePolicy(exec_space,
           {1, 1}, {block_width + 1, block_height + 1}),
       KOKKOS_LAMBDA(int i, int j) {
-        d_new_temperature(IDX(i, j)) = (d_temperature(IDX(i - 1, j)) + d_temperature(IDX(i + 1, j)) +
-          d_temperature(IDX(i, j - 1)) + d_temperature(IDX(i, j + 1)) + d_temperature(IDX(i, j))) *
+        d_new_temperature(IDX(i, j, pitch)) = (d_temperature(IDX(i - 1, j, pitch)) + d_temperature(IDX(i + 1, j, pitch)) +
+          d_temperature(IDX(i, j - 1, pitch)) + d_temperature(IDX(i, j + 1, pitch)) + d_temperature(IDX(i, j, pitch))) *
           0.2;
       });
   
@@ -258,12 +262,13 @@ void invokeJacobiKernel(Kokkos::View<DataType*, DeviceMemSpace> d_temperature, K
 void invokePackingKernels(Kokkos::View<DataType*, DeviceMemSpace> d_temperature, Kokkos::View<DataType*, 
                           DeviceMemSpace> d_left_ghost, Kokkos::View<DataType*, DeviceMemSpace> d_right_ghost, 
                           bool left_bound, bool right_bound, int block_width, int block_height, ExecSpace exec_space) {
+  const int pitch = block_width + 2;
   if(!left_bound) {
     Kokkos::parallel_for(
         "leftPackingKernel",
         RangePolicy(exec_space, 0, block_height),
         KOKKOS_LAMBDA(int j) {
-          d_left_ghost(j) = d_temperature(IDX(1, 1 + j));
+          d_left_ghost(j) = d_temperature(IDX(1, 1 + j, pitch));
         });
   }
   if(!right_bound) {
@@ -271,7 +276,7 @@ void invokePackingKernels(Kokkos::View<DataType*, DeviceMemSpace> d_temperature,
         "rightPackingKernel",
         RangePolicy(exec_space, 0, block_height),
         KOKKOS_LAMBDA(int j) {
-          d_right_ghost(j) = d_temperature(IDX(block_width, 1 + j));
+          d_right_ghost(j) = d_temperature(IDX(block_width, 1 + j, pitch));
         });
   }
   hapiCheck(hapiPeekAtLastError());
@@ -279,19 +284,20 @@ void invokePackingKernels(Kokkos::View<DataType*, DeviceMemSpace> d_temperature,
 
 void invokeUnpackingKernel(Kokkos::View<DataType*, DeviceMemSpace> d_temperature, Kokkos::View<DataType*, DeviceMemSpace> d_ghost,
                            bool is_left, int block_width, int block_height, ExecSpace exec_space) {
+  const int pitch = block_width + 2;
   if (is_left) {
     Kokkos::parallel_for(
         "leftUnpackingKernel",
         RangePolicy(exec_space, 0, block_height),
         KOKKOS_LAMBDA(int j) {
-          d_temperature(IDX(0, 1 + j)) = d_ghost(j);
+          d_temperature(IDX(0, 1 + j, pitch)) = d_ghost(j);
         });
   } else {
     Kokkos::parallel_for(
         "rightUnpackingKernel",
         RangePolicy(exec_space, 0, block_height),
         KOKKOS_LAMBDA(int j) {
-          d_temperature(IDX(block_width + 1, 1 + j)) = d_ghost(j);
+          d_temperature(IDX(block_width + 1, 1 + j, pitch)) = d_ghost(j);
         });
   }
   hapiCheck(hapiPeekAtLastError());
@@ -304,7 +310,9 @@ class Block : public CBase_Block {
   int my_iter;
   int neighbors;
   int remote_count;
+  int send_done_idx;
   int x, y;
+  int block_width, block_height; // Local block dimensions
 
   Kokkos::View<DataType*, HostPinnedSpace> h_temperature;
   Kokkos::View<DataType*, HostPinnedSpace> h_left_ghost;
@@ -351,9 +359,14 @@ class Block : public CBase_Block {
     x = thisIndex.x;
     y = thisIndex.y;
 
-    std::ostringstream os;
-    os << "Init (" << std::to_string(x) << "," << std::to_string(y) << ")";
-    NVTXTracer(os.str(), NVTXColor::Turquoise);
+    // Calculate local block dimensions with remainder distribution
+    int base_w = grid_width / n_chares_x;
+    int rem_w = grid_width % n_chares_x;
+    block_width = base_w + (x < rem_w ? 1 : 0);
+
+    int base_h = grid_height / n_chares_y;
+    int rem_h = grid_height % n_chares_y;
+    block_height = base_h + (y < rem_h ? 1 : 0);
 
     // Check bounds and set number of valid neighbors
     left_bound = right_bound = top_bound = bottom_bound = false;
@@ -464,10 +477,6 @@ class Block : public CBase_Block {
   }
 
   void update() {
-    std::ostringstream os;
-    os << "update (" << std::to_string(x) << "," << std::to_string(y) << ")";
-    NVTXTracer(os.str(), NVTXColor::WetAsphalt);
-
     // Operations in compute stream should only be executed when
     // operations in communication stream (transfers and unpacking) complete
     hapiCheck(hapiEventRecord(comm_event, comm_stream));
@@ -505,10 +514,6 @@ class Block : public CBase_Block {
   }
 
   void packGhosts() {
-    std::ostringstream os;
-    os << "packGhosts (" << std::to_string(x) << "," << std::to_string(y) << ")";
-    NVTXTracer(os.str(), NVTXColor::Emerald);
-
     if (use_zerocopy) {
 #if !COMM_ONLY
       // Pack non-contiguous ghosts to temporary contiguous buffers on device
@@ -583,24 +588,20 @@ class Block : public CBase_Block {
   }
 
   void sendGhosts() {
-    std::ostringstream os;
-    os << "sendGhosts (" << std::to_string(x) << "," << std::to_string(y) << ")";
-    NVTXTracer(os.str(), NVTXColor::PeterRiver);
-
     // Send ghosts to neighboring chares
     if (use_zerocopy) {
       if (!left_bound) 
         thisProxy(x - 1, y).receiveGhostsZC(my_iter, RIGHT, block_height,
-            CkDeviceBuffer(d_send_left_ghost.data(), comm_stream));
+            CkDeviceBuffer(d_send_left_ghost.data(), CkCallback(CkIndex_Block::d_send_left_ghost_done(), thisProxy[thisIndex]), comm_stream));
       if (!right_bound)
         thisProxy(x + 1, y).receiveGhostsZC(my_iter, LEFT, block_height,
-            CkDeviceBuffer(d_send_right_ghost.data(), comm_stream));
+            CkDeviceBuffer(d_send_right_ghost.data(), CkCallback(CkIndex_Block::d_send_right_ghost_done(), thisProxy[thisIndex]), comm_stream));
       if (!top_bound)
         thisProxy(x, y - 1).receiveGhostsZC(my_iter, BOTTOM, block_width,
-            CkDeviceBuffer(d_send_top_ghost.data(), comm_stream));
+            CkDeviceBuffer(d_send_top_ghost.data(), CkCallback(CkIndex_Block::d_send_top_ghost_done(), thisProxy[thisIndex]), comm_stream));
       if (!bottom_bound)
         thisProxy(x, y + 1).receiveGhostsZC(my_iter, TOP, block_width,
-            CkDeviceBuffer(d_send_bottom_ghost.data(), comm_stream));
+            CkDeviceBuffer(d_send_bottom_ghost.data(), CkCallback(CkIndex_Block::d_send_bottom_ghost_done(), thisProxy[thisIndex]), comm_stream));
     } else {
       if (!left_bound)
         thisProxy(x - 1, y).receiveGhostsReg(my_iter, RIGHT, block_height, h_left_ghost.data());
@@ -636,10 +637,6 @@ class Block : public CBase_Block {
   }
 
   void processGhostsZC(int dir, int size, DataType* gh) {
-    std::ostringstream os;
-    os << "processGhostsZC (" << std::to_string(x) << "," << std::to_string(y) << ")";
-    NVTXTracer(os.str(), NVTXColor::Amethyst);
-
     switch (dir) {
       case LEFT:
         invokeUnpackingKernel(d_temperature, d_recv_left_ghost, true, block_width,
@@ -658,27 +655,25 @@ class Block : public CBase_Block {
   }
 
   void processGhostsReg(int dir, int size, DataType* gh) {
-    std::ostringstream os;
-    os << "processGhostsReg (" << std::to_string(x) << "," << std::to_string(y) << ")";
-    NVTXTracer(os.str(), NVTXColor::Amethyst);
-
     switch (dir) {
-      case LEFT:
+      case LEFT: {
         memcpy(h_left_ghost.data(), gh, size * sizeof(DataType));
         Kokkos::deep_copy(comm_space, d_left_ghost, h_left_ghost);
 #if !COMM_ONLY
         invokeUnpackingKernel(d_temperature, d_left_ghost, true, block_width,
             block_height, comm_space);
 #endif
-        break;
-      case RIGHT:
+        thisProxy[thisIndex].d_send_left_ghost_done();
+      } break;
+      case RIGHT: {
         memcpy(h_right_ghost.data(), gh, size * sizeof(DataType));
         Kokkos::deep_copy(comm_space, d_right_ghost, h_right_ghost);
 #if !COMM_ONLY
         invokeUnpackingKernel(d_temperature, d_right_ghost, false, block_width,
             block_height, comm_space);
 #endif
-        break;
+        thisProxy[thisIndex].d_send_right_ghost_done();
+      } break;
       case TOP: {
         memcpy(h_top_ghost.data(), gh, size * sizeof(DataType));
           auto dst = Kokkos::subview(
@@ -687,6 +682,7 @@ class Block : public CBase_Block {
           );
 
           Kokkos::deep_copy(comm_space, dst, h_top_ghost);
+          thisProxy[thisIndex].d_send_top_ghost_done();
       } break;
       case BOTTOM: {
         memcpy(h_bottom_ghost.data(), gh, size * sizeof(DataType));
@@ -699,8 +695,8 @@ class Block : public CBase_Block {
         );
 
         Kokkos::deep_copy(comm_space, dst, h_bottom_ghost);
-      }
-        break;
+        thisProxy[thisIndex].d_send_bottom_ghost_done();
+      } break;
       default:
         CkAbort("Error: invalid direction");
     }
