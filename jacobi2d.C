@@ -330,6 +330,8 @@ class Block : public CBase_Block {
   Kokkos::View<DataType*, DeviceMemSpace> d_send_bottom_ghost;
   Kokkos::View<DataType*, DeviceMemSpace> d_recv_left_ghost;
   Kokkos::View<DataType*, DeviceMemSpace> d_recv_right_ghost;
+  Kokkos::View<DataType*, DeviceMemSpace> d_recv_top_ghost;
+  Kokkos::View<DataType*, DeviceMemSpace> d_recv_bottom_ghost;
 
   hapiStream_t compute_stream;
   hapiStream_t comm_stream;
@@ -342,7 +344,23 @@ class Block : public CBase_Block {
 
   bool left_bound, right_bound, top_bound, bottom_bound;
 
-  Block() {}
+  Block() {
+    usesAtSync = true;
+  }
+
+  Block(CkMigrateMessage* m)
+  {
+    usesAtSync = true;
+    hapiCheck(hapiStreamCreateWithPriority(&compute_stream, hapiStreamDefault, 0));
+    hapiCheck(hapiStreamCreateWithPriority(&comm_stream, hapiStreamDefault, -1));
+
+    compute_space = ExecSpace(compute_stream); 
+    comm_space = ExecSpace(comm_stream);
+
+    hapiCheck(hapiEventCreateWithFlags(&compute_event, hapiEventDisableTiming));
+    hapiCheck(hapiEventCreateWithFlags(&comm_event, hapiEventDisableTiming));
+
+  }
 
   ~Block() {
     hapiCheck(hapiStreamDestroy(compute_stream));
@@ -350,6 +368,69 @@ class Block : public CBase_Block {
 
     hapiCheck(hapiEventDestroy(compute_event));
     hapiCheck(hapiEventDestroy(comm_event));
+  }
+
+  void pup(PUP::er& p) {
+    p | my_iter;
+    p | neighbors;
+    p | remote_count;
+    p | x;
+    p | y;
+    p | block_width;
+    p | block_height;
+    p | left_bound;
+    p | right_bound;
+    p | top_bound;
+    p | bottom_bound;
+
+    ckout<<block_width<<","<<block_height<<endl;
+
+    if(p.isUnpacking())
+    {
+      h_temperature = Kokkos::View<DataType*, HostPinnedSpace>("h_temperature", (block_width + 2) * (block_height + 2));
+      d_temperature = Kokkos::View<DataType*, DeviceMemSpace>("d_temperature", (block_width + 2) * (block_height + 2));
+      d_new_temperature = Kokkos::View<DataType*, DeviceMemSpace>("d_new_temperature", (block_width + 2) * (block_height + 2));
+      h_left_ghost = Kokkos::View<DataType*, HostPinnedSpace>("h_left_ghost", block_height);
+      h_right_ghost = Kokkos::View<DataType*, HostPinnedSpace>("h_right_ghost", block_height);
+      h_top_ghost = Kokkos::View<DataType*, HostPinnedSpace>("h_top_ghost", block_width);
+      h_bottom_ghost = Kokkos::View<DataType*, HostPinnedSpace>("h_bottom_ghost", block_width);
+      if (!use_zerocopy)
+      {
+        d_left_ghost =
+            Kokkos::View<DataType*, DeviceMemSpace>("d_left_ghost", block_height);
+
+        d_right_ghost =
+            Kokkos::View<DataType*, DeviceMemSpace>("d_right_ghost", block_height);
+      }
+      else
+      {
+        d_send_left_ghost =
+            Kokkos::View<DataType*, DeviceMemSpace>("d_send_left_ghost", block_height);
+
+        d_send_right_ghost =
+            Kokkos::View<DataType*, DeviceMemSpace>("d_send_right_ghost", block_height);
+
+        d_send_top_ghost =
+            Kokkos::View<DataType*, DeviceMemSpace>("d_send_top_ghost", block_width);
+
+        d_send_bottom_ghost =
+            Kokkos::View<DataType*, DeviceMemSpace>("d_send_bottom_ghost", block_width);
+
+        d_recv_left_ghost =
+            Kokkos::View<DataType*, DeviceMemSpace>("d_recv_left_ghost", block_height);
+
+        d_recv_right_ghost =
+            Kokkos::View<DataType*, DeviceMemSpace>("d_recv_right_ghost", block_height);
+
+        d_recv_top_ghost =
+            Kokkos::View<DataType*, DeviceMemSpace>("d_recv_top_ghost", block_width);
+
+        d_recv_bottom_ghost =
+            Kokkos::View<DataType*, DeviceMemSpace>("d_recv_bottom_ghost", block_width);
+      }
+    }
+    p(d_temperature.data(), (block_width + 2) * (block_height + 2), PUP::PUPMode::DEVICE);
+    p(d_new_temperature.data(), (block_width + 2) * (block_height + 2), PUP::PUPMode::DEVICE);
   }
 
   void init() {
@@ -441,6 +522,12 @@ class Block : public CBase_Block {
 
         d_recv_right_ghost =
             Kokkos::View<DataType*, DeviceMemSpace>("d_recv_right_ghost", block_height);
+
+        d_recv_top_ghost =
+            Kokkos::View<DataType*, DeviceMemSpace>("d_recv_top_ghost", block_width);
+
+        d_recv_bottom_ghost =
+            Kokkos::View<DataType*, DeviceMemSpace>("d_recv_bottom_ghost", block_width);
     }
 
     hapiCheck(hapiStreamCreateWithPriority(&compute_stream, hapiStreamDefault, 0));
@@ -476,6 +563,21 @@ class Block : public CBase_Block {
     contribute(CkCallback(CkReductionTarget(Main, initDone), main_proxy));
   }
 
+
+  void iterate() {
+    if (my_iter != 0 && my_iter % 10 == 0) {
+      cudaStreamSynchronize(comm_stream);
+      cudaStreamSynchronize(compute_stream);
+      AtSync();
+    } else {
+      thisProxy[thisIndex].exchangeGhosts();
+    }
+  }
+
+  void ResumeFromSync() {
+    thisProxy[thisIndex].exchangeGhosts();
+  }
+
   void update() {
     // Operations in compute stream should only be executed when
     // operations in communication stream (transfers and unpacking) complete
@@ -492,11 +594,6 @@ class Block : public CBase_Block {
     // only be executed when operations in compute stream complete
     hapiCheck(hapiEventRecord(compute_event, compute_stream));
     hapiCheck(hapiStreamWaitEvent(comm_stream, compute_event, 0));
-
-    // Copy final temperature data back to host
-    if (print_elements && (my_iter == warmup_iters + n_iters)) {
-      Kokkos::deep_copy(comm_space, h_temperature, d_new_temperature);
-    }
 
     if (sync_ver) {
 #if hapi_SYNC
@@ -625,10 +722,10 @@ class Block : public CBase_Block {
         buf = d_recv_right_ghost.data();
         break;
       case TOP:
-        buf = d_temperature.data() + 1;
+        buf = d_recv_top_ghost.data();
         break;
       case BOTTOM:
-        buf = d_temperature.data() + (block_width + 2) * (block_height + 1) + 1;
+        buf = d_recv_bottom_ghost.data();
         break;
       default:
         CkAbort("Error: invalid direction");
@@ -646,9 +743,18 @@ class Block : public CBase_Block {
         invokeUnpackingKernel(d_temperature, d_recv_right_ghost, false, block_width,
             block_height, comm_space);
         break;
-      case TOP:
-      case BOTTOM:
-        break;
+      case TOP: {
+        auto dst = Kokkos::subview(d_temperature,
+                                  std::make_pair((size_t)1, (size_t)(1 + block_width)));
+        Kokkos::deep_copy(comm_space, dst, d_recv_top_ghost);
+      } break;
+      case BOTTOM: {
+        size_t pitch = block_width + 2;
+        size_t start = pitch * (block_height + 1) + 1;
+        auto dst = Kokkos::subview(d_temperature,
+                                  std::make_pair(start, start + (size_t)block_width));
+        Kokkos::deep_copy(comm_space, dst, d_recv_bottom_ghost);
+      } break;
       default:
         CkAbort("Error: invalid direction");
     }
@@ -700,6 +806,12 @@ class Block : public CBase_Block {
       default:
         CkAbort("Error: invalid direction");
     }
+  }
+
+  void copyToHost() {
+    hapiCheck(hapiStreamSynchronize(comm_stream));
+    hapiCheck(hapiStreamSynchronize(compute_stream));
+    Kokkos::deep_copy(h_temperature, d_temperature);
   }
 
   void print() {

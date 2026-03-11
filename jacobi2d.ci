@@ -28,6 +28,7 @@ mainmodule jacobi2d {
     entry void init();
     entry void initDone();
     entry void update();
+    entry void iterate();
     entry void updateDone();
     entry void packGhosts();
     entry void packGhostsDone();
@@ -92,8 +93,9 @@ mainmodule jacobi2d {
           contribute(CkCallback(CkReductionTarget(Main, commDone), main_proxy));
         } else {
           if (my_iter < warmup_iters + n_iters) {
-            thisProxy[thisIndex].exchangeGhosts();
+            thisProxy[thisIndex].iterate();
           } else {
+            if (print_elements) copyToHost();
             contribute(CkCallback(CkReductionTarget(Main, allDone), main_proxy));
           }
         }
