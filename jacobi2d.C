@@ -35,6 +35,10 @@ using HostMemSpace = Kokkos::HostSpace;
 /* readonly */ bool sync_ver;
 /* readonly */ bool use_zerocopy;
 /* readonly */ bool print_elements;
+/* readonly */ int lb_freq;
+/* readonly */ int imbalance;
+/* readonly */ CProxy_cuptiManager cupti_manager;
+/* readonly */ int num_instrument_iter;
 
 enum Direction { LEFT = 1, RIGHT, TOP, BOTTOM };
 
@@ -57,6 +61,21 @@ public:
     }
 };
 
+class cuptiManager: public CBase_cuptiManager {
+  public:
+  cuptiManager(){}
+  void Initialize() {
+    hapiCuptiInit();
+    CkCallback cb(CkReductionTarget(Main, cuptiInitialized), main_proxy);
+    contribute(cb);
+  }
+  void Finalize() {
+    hapiCuptiFinalize();
+    CkCallback cb(CkReductionTarget(Main, cuptiFinalized), main_proxy);
+    contribute(cb);
+  }
+};
+
 CProxy_KokkosGroup kokkosMgmt;
 
 class Main : public CBase_Main {
@@ -67,6 +86,10 @@ class Main : public CBase_Main {
   double comm_agg_time;
   double update_start_time;
   double update_agg_time;
+  double instrumented_iteration_start;
+  double load_balance_start_time;
+  double cupti_init_time_start;
+
 
 public:
   Main(CkArgMsg* m) {
@@ -81,6 +104,10 @@ public:
     print_elements = false;
     sync_ver = false;
     my_iter = 0;
+    lb_freq = 100;
+    imbalance = 5;  // Max extra iterations for load imbalance
+    num_instrument_iter = 0;
+    cupti_manager = CProxy_cuptiManager::ckNew(); 
 
     // Initialize aggregate timers
     update_agg_time = 0.0;
@@ -90,7 +117,7 @@ public:
     int c;
     int target_num_chares = 4;
 
-    while ((c = getopt(m->argc, m->argv, "W:H:i:u:N:yzp")) != -1) {
+    while ((c = getopt(m->argc, m->argv, "W:H:i:u:N:yzp:n:l:m:")) != -1) {
       switch (c) {
         case 'W':
           grid_width = atoi(optarg);
@@ -115,6 +142,15 @@ public:
           break;
         case 'p':
           print_elements = true;
+          break;
+        case 'n':
+          num_instrument_iter = atoi(optarg);
+          break;
+        case 'l':
+          lb_freq = atoi(optarg);
+          break;
+        case 'm':
+          imbalance = atoi(optarg);
           break;
         default:
           CkPrintf(
@@ -205,6 +241,39 @@ public:
     Kokkos::finalize();
     CkExit();
   }
+
+  void initializeCupti() {
+    ckout<<"aggragatet time for this set of iteration -> (removed time for instrumented iterations and load balancing time) "<< (CkWallTimer() - start_time)/(lb_freq - num_instrument_iter) << " seconds"<<endl;
+    cupti_init_time_start = CkWallTimer();
+    cupti_manager.Initialize();
+  }
+
+  void cuptiInitialized()
+  {
+    double cupti_init_time = CkWallTimer() - cupti_init_time_start;
+    ckout<<"time taken for CUPTI initialization: "<< cupti_init_time << " seconds"<<endl;
+    instrumented_iteration_start = CkWallTimer();
+    block_proxy.exchangeGhosts();
+  }
+
+  void finalizeCupti() {
+    cupti_manager.Finalize();
+  }
+
+  void cuptiFinalized()
+  {
+    ckout<<"time taken for load balancing -> "<< (CkWallTimer() - load_balance_start_time)/num_instrument_iter << " seconds"<<endl;
+    block_proxy.exchangeGhosts();
+    start_time = CkWallTimer();
+  }
+
+  void record_instrumented_iteration_times()
+  {
+    double instrumented_iteration_time = CkWallTimer() - instrumented_iteration_start;
+    ckout<<"time for this set of instrumented iterations -> "<< instrumented_iteration_time/num_instrument_iter << " seconds"<<endl;
+    block_proxy.callAtSync();
+    load_balance_start_time = CkWallTimer();
+  }
 };
 
 using DeviceMemSpace = ExecSpace::memory_space;
@@ -220,41 +289,44 @@ void invokeBoundaryKernels(Kokkos::View<DataType*, DeviceMemSpace> d_temperature
     bool bottom_bound, ExecSpace exec_space) {
   const int pitch = block_width + 2;
   if (left_bound) {
-    Kokkos::parallel_for(
-        "leftBoundaryKernel",
-        RangePolicy(exec_space, 0, block_height), KOKKOS_LAMBDA(int i) { d_temperature(IDX(0, 1 + i, pitch)) = 1; });
+    CUPTI_LAUNCH_W(Kokkos::parallel_for("leftBoundaryKernel",RangePolicy(exec_space, 0, block_height), KOKKOS_LAMBDA(int i) { d_temperature(IDX(0, 1 + i, pitch)) = 1; });, exec_space.cuda_stream());
   }
   if (right_bound) {
-    Kokkos::parallel_for(
+    CUPTI_LAUNCH_W(Kokkos::parallel_for(
         "rightBoundaryKernel",
-        RangePolicy(exec_space, 0, block_height), KOKKOS_LAMBDA(int i) { d_temperature(IDX(block_width + 1, 1 + i, pitch)) = 1; });
+        RangePolicy(exec_space, 0, block_height), KOKKOS_LAMBDA(int i) { d_temperature(IDX(block_width + 1, 1 + i, pitch)) = 1; });, exec_space.cuda_stream());
   }
 
   if (top_bound) {
-    Kokkos::parallel_for(
+    CUPTI_LAUNCH_W(Kokkos::parallel_for(
         "topBoundaryKernel",
-        RangePolicy(exec_space, 0, block_width), KOKKOS_LAMBDA(int i) { d_temperature(IDX(1 + i, 0, pitch)) = 1; });
+        RangePolicy(exec_space, 0, block_width), KOKKOS_LAMBDA(int i) { d_temperature(IDX(1 + i, 0, pitch)) = 1; });, exec_space.cuda_stream());
   }
   if (bottom_bound) {
-    Kokkos::parallel_for(
+    CUPTI_LAUNCH_W(Kokkos::parallel_for(
         "bottomBoundaryKernel",
-        RangePolicy(exec_space, 0, block_width), KOKKOS_LAMBDA(int i) { d_temperature(IDX(1 + i, block_height + 1, pitch)) = 1; });
+        RangePolicy(exec_space, 0, block_width), KOKKOS_LAMBDA(int i) { d_temperature(IDX(1 + i, block_height + 1, pitch)) = 1; });, exec_space.cuda_stream());
   }
   hapiCheck(hapiPeekAtLastError());
 }
 
 void invokeJacobiKernel(Kokkos::View<DataType*, DeviceMemSpace> d_temperature, Kokkos::View<DataType*, DeviceMemSpace> d_new_temperature,
-    int block_width, int block_height, ExecSpace exec_space) {
+    int block_width, int block_height, int iters, ExecSpace exec_space) {
   const int pitch = block_width + 2;
-  Kokkos::parallel_for(
+  CUPTI_LAUNCH_W(Kokkos::parallel_for(
       "invokeJacobiKernel",
       MDRangePolicy(exec_space,
           {1, 1}, {block_width + 1, block_height + 1}),
       KOKKOS_LAMBDA(int i, int j) {
-        d_new_temperature(IDX(i, j, pitch)) = (d_temperature(IDX(i - 1, j, pitch)) + d_temperature(IDX(i + 1, j, pitch)) +
-          d_temperature(IDX(i, j - 1, pitch)) + d_temperature(IDX(i, j + 1, pitch)) + d_temperature(IDX(i, j, pitch))) *
-          0.2;
-      });
+        if(iters == 0) return;
+        double value = 0;
+        for(int iter = 0; iter < iters; iter++) {
+            value = (d_temperature(IDX(i - 1, j, pitch)) + d_temperature(IDX(i + 1, j, pitch)) +
+            d_temperature(IDX(i, j - 1, pitch)) + d_temperature(IDX(i, j + 1, pitch)) + d_temperature(IDX(i, j, pitch))) *
+            0.2;
+        }
+        d_new_temperature(IDX(i, j, pitch)) = value/iters;
+      }), exec_space.cuda_stream());
   
   hapiCheck(hapiPeekAtLastError());
 }
@@ -264,20 +336,20 @@ void invokePackingKernels(Kokkos::View<DataType*, DeviceMemSpace> d_temperature,
                           bool left_bound, bool right_bound, int block_width, int block_height, ExecSpace exec_space) {
   const int pitch = block_width + 2;
   if(!left_bound) {
-    Kokkos::parallel_for(
+    CUPTI_LAUNCH_W(Kokkos::parallel_for(
         "leftPackingKernel",
         RangePolicy(exec_space, 0, block_height),
         KOKKOS_LAMBDA(int j) {
           d_left_ghost(j) = d_temperature(IDX(1, 1 + j, pitch));
-        });
+        });, exec_space.cuda_stream());
   }
   if(!right_bound) {
-    Kokkos::parallel_for(
+    CUPTI_LAUNCH_W(Kokkos::parallel_for(
         "rightPackingKernel",
         RangePolicy(exec_space, 0, block_height),
         KOKKOS_LAMBDA(int j) {
           d_right_ghost(j) = d_temperature(IDX(block_width, 1 + j, pitch));
-        });
+        });, exec_space.cuda_stream());
   }
   hapiCheck(hapiPeekAtLastError());
 }
@@ -286,19 +358,19 @@ void invokeUnpackingKernel(Kokkos::View<DataType*, DeviceMemSpace> d_temperature
                            bool is_left, int block_width, int block_height, ExecSpace exec_space) {
   const int pitch = block_width + 2;
   if (is_left) {
-    Kokkos::parallel_for(
+    CUPTI_LAUNCH_W(Kokkos::parallel_for(
         "leftUnpackingKernel",
         RangePolicy(exec_space, 0, block_height),
         KOKKOS_LAMBDA(int j) {
           d_temperature(IDX(0, 1 + j, pitch)) = d_ghost(j);
-        });
+        });, exec_space.cuda_stream());
   } else {
-    Kokkos::parallel_for(
+    CUPTI_LAUNCH_W(Kokkos::parallel_for(
         "rightUnpackingKernel",
         RangePolicy(exec_space, 0, block_height),
         KOKKOS_LAMBDA(int j) {
           d_temperature(IDX(block_width + 1, 1 + j, pitch)) = d_ghost(j);
-        });
+        });, exec_space.cuda_stream());
   }
   hapiCheck(hapiPeekAtLastError());
 }
@@ -313,6 +385,8 @@ class Block : public CBase_Block {
   int send_done_idx;
   int x, y;
   int block_width, block_height; // Local block dimensions
+  double start_time;
+  double load_iters;
 
   Kokkos::View<DataType*, HostPinnedSpace> h_temperature;
   Kokkos::View<DataType*, HostPinnedSpace> h_left_ghost;
@@ -382,8 +456,7 @@ class Block : public CBase_Block {
     p | right_bound;
     p | top_bound;
     p | bottom_bound;
-
-    ckout<<block_width<<","<<block_height<<endl;
+    p | load_iters;
 
     if(p.isUnpacking())
     {
@@ -439,6 +512,8 @@ class Block : public CBase_Block {
     neighbors = 0;
     x = thisIndex.x;
     y = thisIndex.y;
+
+    load_iters = (((float) (x + y)) / (n_chares_x + n_chares_y)) * imbalance;
 
     // Calculate local block dimensions with remainder distribution
     int base_w = grid_width / n_chares_x;
@@ -568,14 +643,31 @@ class Block : public CBase_Block {
     if (my_iter != 0 && my_iter % 10 == 0) {
       cudaStreamSynchronize(comm_stream);
       cudaStreamSynchronize(compute_stream);
-      AtSync();
+
+      CkCallback cb(CkReductionTarget(Main, record_instrumented_iteration_times), main_proxy);
+      contribute(cb);
+
     } else {
-      thisProxy[thisIndex].exchangeGhosts();
+      if((my_iter + num_instrument_iter + 1)%lb_freq==0) 
+      { 
+        CkCallback cb(CkReductionTarget(Main, initializeCupti), main_proxy);
+        contribute(cb);
+      }
+      else 
+      {
+        thisProxy[thisIndex].exchangeGhosts();
+      }
     }
   }
 
+  void callAtSync()
+  {
+    AtSync();
+  }
+
   void ResumeFromSync() {
-    thisProxy[thisIndex].exchangeGhosts();
+    CkCallback cb(CkReductionTarget(Main, finalizeCupti), main_proxy);
+    contribute(cb);
   }
 
   void update() {

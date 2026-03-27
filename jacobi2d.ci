@@ -12,6 +12,8 @@ mainmodule jacobi2d {
   readonly bool sync_ver;
   readonly bool use_zerocopy;
   readonly bool print_elements;
+  readonly CProxy_cuptiManager cupti_manager;
+  readonly int num_instrument_iter;
 
   mainchare Main {
     entry Main(CkArgMsg* m);
@@ -21,6 +23,12 @@ mainmodule jacobi2d {
     entry [reductiontarget] void commDone();
     entry [reductiontarget] void allDone();
     entry void printDone();
+    //functions for cupti initialization and timing
+    entry [reductiontarget] void initializeCupti();
+    entry [reductiontarget] void finalizeCupti();
+    entry [reductiontarget] void cuptiInitialized();
+    entry [reductiontarget] void cuptiFinalized();
+    entry [reductiontarget] void record_instrumented_iteration_times();
   };
 
   array [2D] Block {
@@ -38,6 +46,7 @@ mainmodule jacobi2d {
     entry void d_send_right_ghost_done();
     entry void d_send_top_ghost_done();
     entry void d_send_bottom_ghost_done();
+    entry void callAtSync();
 
     entry void exchangeGhosts() {
       serial {
@@ -108,4 +117,10 @@ mainmodule jacobi2d {
       entry KokkosGroup();
   };
 
+  //group to initalize and finalize cupti at the process level
+  nodegroup cuptiManager {
+    entry void cuptiManager();
+    entry [reductiontarget] void Initialize();
+    entry [reductiontarget] void Finalize();
+  };
 };
