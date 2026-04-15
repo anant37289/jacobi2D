@@ -12,8 +12,11 @@ mainmodule jacobi2d {
   readonly bool sync_ver;
   readonly bool use_zerocopy;
   readonly bool print_elements;
+  readonly int lb_freq;
+  readonly int imbalance;
   readonly CProxy_cuptiManager cupti_manager;
   readonly int num_instrument_iter;
+  readonly bool use_lb;
 
   mainchare Main {
     entry Main(CkArgMsg* m);
@@ -50,6 +53,7 @@ mainmodule jacobi2d {
 
     entry void exchangeGhosts() {
       serial {
+        //start_time = CkWallTimer();
         my_iter++;
         update();
         if (!sync_ver) packGhosts();

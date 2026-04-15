@@ -39,6 +39,7 @@ using HostMemSpace = Kokkos::HostSpace;
 /* readonly */ int imbalance;
 /* readonly */ CProxy_cuptiManager cupti_manager;
 /* readonly */ int num_instrument_iter;
+/* readonly */ bool use_lb;
 
 enum Direction { LEFT = 1, RIGHT, TOP, BOTTOM };
 
@@ -50,6 +51,7 @@ public:
         #ifdef GPU_BACKEND
         int device;
         hapiCheck(cudaGetDevice(&device));
+        ckout<<"PE "<<CkMyPe()<< " using device "<<device<<endl;
         Kokkos::InitializationSettings args_kokkos;
         args_kokkos.set_device_id(device);
         Kokkos::initialize(args_kokkos);
@@ -103,9 +105,10 @@ public:
     use_zerocopy = false;
     print_elements = false;
     sync_ver = false;
+    use_lb = false;
     my_iter = 0;
     lb_freq = 100;
-    imbalance = 5;  // Max extra iterations for load imbalance
+    imbalance = 10;  // Max extra iterations for load imbalance
     num_instrument_iter = 0;
     cupti_manager = CProxy_cuptiManager::ckNew(); 
 
@@ -117,7 +120,7 @@ public:
     int c;
     int target_num_chares = 4;
 
-    while ((c = getopt(m->argc, m->argv, "W:H:i:u:N:yzp:n:l:m:")) != -1) {
+    while ((c = getopt(m->argc, m->argv, "W:H:i:u:N:yzpn:b:m:l")) != -1) {
       switch (c) {
         case 'W':
           grid_width = atoi(optarg);
@@ -146,16 +149,20 @@ public:
         case 'n':
           num_instrument_iter = atoi(optarg);
           break;
-        case 'l':
+        case 'b':
           lb_freq = atoi(optarg);
           break;
         case 'm':
           imbalance = atoi(optarg);
           break;
+        case 'l':
+          use_lb = true; 
+          break;
         default:
           CkPrintf(
               "Usage: %s -W [grid width] -H [grid height] -N [num chares]"
-              "-i [iterations] -u [warmup] -y (use sync version) -z (use GPU zerocopy) -p (print blocks)\n",
+              "-i [iterations] -u [warmup] -y (use sync version) -z (use GPU zerocopy) -p (print blocks)"
+              "-n [num_instrument_iter] -b [lb_freq] -m [imbalance] -l (use_lb)\n",
               m->argv[0]);
           CkExit();
       }
@@ -179,9 +186,9 @@ public:
     // Print configuration
     CkPrintf("\n[hapi 2D Jacobi example]\n");
     CkPrintf("Grid: %d x %d, Chares: %d x %d, Iterations: %d, "
-        "Warm-up: %d, Bulk-synchronous: %d, Zerocopy: %d, Print: %d\n\n",
+        "Warm-up: %d, Bulk-synchronous: %d, Zerocopy: %d, Print: %d, lb_freq: %d, num_instrument_iter: %d\n\n",
         grid_width, grid_height, n_chares_x, n_chares_y,
-        n_iters, warmup_iters, sync_ver, use_zerocopy, print_elements);
+        n_iters, warmup_iters, sync_ver, use_zerocopy, print_elements, lb_freq, num_instrument_iter);
 
     // Create blocks and start iteration
     block_proxy = CProxy_Block::ckNew(n_chares_x, n_chares_y);
@@ -221,11 +228,11 @@ public:
 
   void allDone() {
     double total_time = CkWallTimer() - start_time;
-    CkPrintf("Total time: %.3lf s\nAverage iteration time: %.3lf us\n",
-        total_time, (total_time / n_iters) * 1e6);
+    CkPrintf("Total time: %.3lf s\nAverage iteration time: %.3lf s\n",
+        total_time, (total_time / n_iters));
     if (sync_ver) {
-      CkPrintf("Comm time per iteration: %.3lf us\nUpdate time per iteration: %.3lf us\n",
-          (comm_agg_time / n_iters) * 1e6, (update_agg_time / n_iters) * 1e6);
+      CkPrintf("Comm time per iteration: %.3lf s\nUpdate time per iteration: %.3lf s\n",
+          (comm_agg_time / n_iters) , (update_agg_time / n_iters) );
     }
 
     if (print_elements) {
@@ -262,7 +269,7 @@ public:
 
   void cuptiFinalized()
   {
-    ckout<<"time taken for load balancing -> "<< (CkWallTimer() - load_balance_start_time)/num_instrument_iter << " seconds"<<endl;
+    ckout<<"time taken for load balancing -> "<< (CkWallTimer() - load_balance_start_time) << " seconds"<<endl;
     block_proxy.exchangeGhosts();
     start_time = CkWallTimer();
   }
@@ -289,23 +296,23 @@ void invokeBoundaryKernels(Kokkos::View<DataType*, DeviceMemSpace> d_temperature
     bool bottom_bound, ExecSpace exec_space) {
   const int pitch = block_width + 2;
   if (left_bound) {
-    CUPTI_LAUNCH_W(Kokkos::parallel_for("leftBoundaryKernel",RangePolicy(exec_space, 0, block_height), KOKKOS_LAMBDA(int i) { d_temperature(IDX(0, 1 + i, pitch)) = 1; });, exec_space.cuda_stream());
+    CUPTI_LAUNCH_WRAPPER(Kokkos::parallel_for("leftBoundaryKernel",RangePolicy(exec_space, 0, block_height), KOKKOS_LAMBDA(int i) { d_temperature(IDX(0, 1 + i, pitch)) = 1; }));
   }
   if (right_bound) {
-    CUPTI_LAUNCH_W(Kokkos::parallel_for(
+    CUPTI_LAUNCH_WRAPPER(Kokkos::parallel_for(
         "rightBoundaryKernel",
-        RangePolicy(exec_space, 0, block_height), KOKKOS_LAMBDA(int i) { d_temperature(IDX(block_width + 1, 1 + i, pitch)) = 1; });, exec_space.cuda_stream());
+        RangePolicy(exec_space, 0, block_height), KOKKOS_LAMBDA(int i) { d_temperature(IDX(block_width + 1, 1 + i, pitch)) = 1; }));
   }
 
   if (top_bound) {
-    CUPTI_LAUNCH_W(Kokkos::parallel_for(
+    CUPTI_LAUNCH_WRAPPER(Kokkos::parallel_for(
         "topBoundaryKernel",
-        RangePolicy(exec_space, 0, block_width), KOKKOS_LAMBDA(int i) { d_temperature(IDX(1 + i, 0, pitch)) = 1; });, exec_space.cuda_stream());
+        RangePolicy(exec_space, 0, block_width), KOKKOS_LAMBDA(int i) { d_temperature(IDX(1 + i, 0, pitch)) = 1; }));
   }
   if (bottom_bound) {
-    CUPTI_LAUNCH_W(Kokkos::parallel_for(
+    CUPTI_LAUNCH_WRAPPER(Kokkos::parallel_for(
         "bottomBoundaryKernel",
-        RangePolicy(exec_space, 0, block_width), KOKKOS_LAMBDA(int i) { d_temperature(IDX(1 + i, block_height + 1, pitch)) = 1; });, exec_space.cuda_stream());
+        RangePolicy(exec_space, 0, block_width), KOKKOS_LAMBDA(int i) { d_temperature(IDX(1 + i, block_height + 1, pitch)) = 1; }));
   }
   hapiCheck(hapiPeekAtLastError());
 }
@@ -313,20 +320,20 @@ void invokeBoundaryKernels(Kokkos::View<DataType*, DeviceMemSpace> d_temperature
 void invokeJacobiKernel(Kokkos::View<DataType*, DeviceMemSpace> d_temperature, Kokkos::View<DataType*, DeviceMemSpace> d_new_temperature,
     int block_width, int block_height, int iters, ExecSpace exec_space) {
   const int pitch = block_width + 2;
-  CUPTI_LAUNCH_W(Kokkos::parallel_for(
+  CUPTI_LAUNCH_WRAPPER(Kokkos::parallel_for(
       "invokeJacobiKernel",
       MDRangePolicy(exec_space,
           {1, 1}, {block_width + 1, block_height + 1}),
       KOKKOS_LAMBDA(int i, int j) {
         if(iters == 0) return;
-        double value = 0;
+        DataType value = 0;
         for(int iter = 0; iter < iters; iter++) {
-            value = (d_temperature(IDX(i - 1, j, pitch)) + d_temperature(IDX(i + 1, j, pitch)) +
+            value += (d_temperature(IDX(i - 1, j, pitch)) + d_temperature(IDX(i + 1, j, pitch)) +
             d_temperature(IDX(i, j - 1, pitch)) + d_temperature(IDX(i, j + 1, pitch)) + d_temperature(IDX(i, j, pitch))) *
             0.2;
         }
         d_new_temperature(IDX(i, j, pitch)) = value/iters;
-      }), exec_space.cuda_stream());
+      }));
   
   hapiCheck(hapiPeekAtLastError());
 }
@@ -336,20 +343,20 @@ void invokePackingKernels(Kokkos::View<DataType*, DeviceMemSpace> d_temperature,
                           bool left_bound, bool right_bound, int block_width, int block_height, ExecSpace exec_space) {
   const int pitch = block_width + 2;
   if(!left_bound) {
-    CUPTI_LAUNCH_W(Kokkos::parallel_for(
+    CUPTI_LAUNCH_WRAPPER(Kokkos::parallel_for(
         "leftPackingKernel",
         RangePolicy(exec_space, 0, block_height),
         KOKKOS_LAMBDA(int j) {
           d_left_ghost(j) = d_temperature(IDX(1, 1 + j, pitch));
-        });, exec_space.cuda_stream());
+        }));
   }
   if(!right_bound) {
-    CUPTI_LAUNCH_W(Kokkos::parallel_for(
+    CUPTI_LAUNCH_WRAPPER(Kokkos::parallel_for(
         "rightPackingKernel",
         RangePolicy(exec_space, 0, block_height),
         KOKKOS_LAMBDA(int j) {
           d_right_ghost(j) = d_temperature(IDX(block_width, 1 + j, pitch));
-        });, exec_space.cuda_stream());
+        }));
   }
   hapiCheck(hapiPeekAtLastError());
 }
@@ -358,19 +365,19 @@ void invokeUnpackingKernel(Kokkos::View<DataType*, DeviceMemSpace> d_temperature
                            bool is_left, int block_width, int block_height, ExecSpace exec_space) {
   const int pitch = block_width + 2;
   if (is_left) {
-    CUPTI_LAUNCH_W(Kokkos::parallel_for(
+    CUPTI_LAUNCH_WRAPPER(Kokkos::parallel_for(
         "leftUnpackingKernel",
         RangePolicy(exec_space, 0, block_height),
         KOKKOS_LAMBDA(int j) {
           d_temperature(IDX(0, 1 + j, pitch)) = d_ghost(j);
-        });, exec_space.cuda_stream());
+        }));
   } else {
-    CUPTI_LAUNCH_W(Kokkos::parallel_for(
+    CUPTI_LAUNCH_WRAPPER(Kokkos::parallel_for(
         "rightUnpackingKernel",
         RangePolicy(exec_space, 0, block_height),
         KOKKOS_LAMBDA(int j) {
           d_temperature(IDX(block_width + 1, 1 + j, pitch)) = d_ghost(j);
-        });, exec_space.cuda_stream());
+        }));
   }
   hapiCheck(hapiPeekAtLastError());
 }
@@ -386,7 +393,7 @@ class Block : public CBase_Block {
   int x, y;
   int block_width, block_height; // Local block dimensions
   double start_time;
-  double load_iters;
+  int load_iters;
 
   Kokkos::View<DataType*, HostPinnedSpace> h_temperature;
   Kokkos::View<DataType*, HostPinnedSpace> h_left_ghost;
@@ -424,6 +431,8 @@ class Block : public CBase_Block {
 
   Block(CkMigrateMessage* m)
   {
+    ckout<<"["<<CkMyPe()<<"] block ("<<thisIndex.x<<","<<thisIndex.y<<") migrated"<<endl;
+
     usesAtSync = true;
     hapiCheck(hapiStreamCreateWithPriority(&compute_stream, hapiStreamDefault, 0));
     hapiCheck(hapiStreamCreateWithPriority(&comm_stream, hapiStreamDefault, -1));
@@ -460,13 +469,13 @@ class Block : public CBase_Block {
 
     if(p.isUnpacking())
     {
-      h_temperature = Kokkos::View<DataType*, HostPinnedSpace>("h_temperature", (block_width + 2) * (block_height + 2));
+      // h_temperature = Kokkos::View<DataType*, HostPinnedSpace>("h_temperature", (block_width + 2) * (block_height + 2));
       d_temperature = Kokkos::View<DataType*, DeviceMemSpace>("d_temperature", (block_width + 2) * (block_height + 2));
       d_new_temperature = Kokkos::View<DataType*, DeviceMemSpace>("d_new_temperature", (block_width + 2) * (block_height + 2));
-      h_left_ghost = Kokkos::View<DataType*, HostPinnedSpace>("h_left_ghost", block_height);
-      h_right_ghost = Kokkos::View<DataType*, HostPinnedSpace>("h_right_ghost", block_height);
-      h_top_ghost = Kokkos::View<DataType*, HostPinnedSpace>("h_top_ghost", block_width);
-      h_bottom_ghost = Kokkos::View<DataType*, HostPinnedSpace>("h_bottom_ghost", block_width);
+      // h_left_ghost = Kokkos::View<DataType*, HostPinnedSpace>("h_left_ghost", block_height);
+      // h_right_ghost = Kokkos::View<DataType*, HostPinnedSpace>("h_right_ghost", block_height);
+      // h_top_ghost = Kokkos::View<DataType*, HostPinnedSpace>("h_top_ghost", block_width);
+      // h_bottom_ghost = Kokkos::View<DataType*, HostPinnedSpace>("h_bottom_ghost", block_width);
       if (!use_zerocopy)
       {
         d_left_ghost =
@@ -512,8 +521,10 @@ class Block : public CBase_Block {
     neighbors = 0;
     x = thisIndex.x;
     y = thisIndex.y;
+    
+    load_iters = 1 + (int)((((float) (x)) / (n_chares_x)) * imbalance);
 
-    load_iters = (((float) (x + y)) / (n_chares_x + n_chares_y)) * imbalance;
+    // ckout<<"["<<CkMyPe()<<"] block ("<<x<<","<<y<<") has load_iters: "<<load_iters<<endl;
 
     // Calculate local block dimensions with remainder distribution
     int base_w = grid_width / n_chares_x;
@@ -543,18 +554,18 @@ class Block : public CBase_Block {
     else
       neighbors++;
 
-    h_temperature =
-        Kokkos::View<DataType*, HostPinnedSpace>(
-            "h_temperature",
-            (block_width + 2) * (block_height + 2));
+    // h_temperature =
+    //     Kokkos::View<DataType*, HostPinnedSpace>(
+    //         "h_temperature",
+    //         (block_width + 2) * (block_height + 2));
 
-    h_left_ghost = Kokkos::View<DataType*, HostPinnedSpace>("h_left_ghost", block_height);
+    // h_left_ghost = Kokkos::View<DataType*, HostPinnedSpace>("h_left_ghost", block_height);
 
-    h_right_ghost = Kokkos::View<DataType*, HostPinnedSpace>("h_right_ghost", block_height);
+    // h_right_ghost = Kokkos::View<DataType*, HostPinnedSpace>("h_right_ghost", block_height);
 
-    h_top_ghost = Kokkos::View<DataType*, HostPinnedSpace>("h_top_ghost", block_width);
+    // h_top_ghost = Kokkos::View<DataType*, HostPinnedSpace>("h_top_ghost", block_width);
 
-    h_bottom_ghost = Kokkos::View<DataType*, HostPinnedSpace>("h_bottom_ghost", block_width);
+    // h_bottom_ghost = Kokkos::View<DataType*, HostPinnedSpace>("h_bottom_ghost", block_width);
 
 
     // ---- Device allocations (GPU/ExecSpace device) ----
@@ -640,15 +651,14 @@ class Block : public CBase_Block {
 
 
   void iterate() {
-    if (my_iter != 0 && my_iter % 10 == 0) {
+    if (use_lb && my_iter != 0 && (my_iter+1) % lb_freq == 0) {
       cudaStreamSynchronize(comm_stream);
       cudaStreamSynchronize(compute_stream);
 
       CkCallback cb(CkReductionTarget(Main, record_instrumented_iteration_times), main_proxy);
       contribute(cb);
-
     } else {
-      if((my_iter + num_instrument_iter + 1)%lb_freq==0) 
+      if(use_lb && (my_iter + num_instrument_iter + 1)%lb_freq==0) 
       { 
         CkCallback cb(CkReductionTarget(Main, initializeCupti), main_proxy);
         contribute(cb);
@@ -666,6 +676,7 @@ class Block : public CBase_Block {
   }
 
   void ResumeFromSync() {
+    // ckout<<"object ("<<thisIndex.x<<", "<<thisIndex.y<<") resuming from sync"<<endl;
     CkCallback cb(CkReductionTarget(Main, finalizeCupti), main_proxy);
     contribute(cb);
   }
@@ -678,8 +689,7 @@ class Block : public CBase_Block {
 
 #if !COMM_ONLY
     // Invoke GPU kernel for Jacobi computation
-    invokeJacobiKernel(d_temperature, d_new_temperature, block_width, block_height,
-        compute_space);
+    invokeJacobiKernel(d_temperature, d_new_temperature, block_width, block_height, load_iters, compute_space);
 #endif
 
     // Operations in communication stream (packing and transfers) should
@@ -903,10 +913,12 @@ class Block : public CBase_Block {
   void copyToHost() {
     hapiCheck(hapiStreamSynchronize(comm_stream));
     hapiCheck(hapiStreamSynchronize(compute_stream));
+    h_temperature = Kokkos::View<DataType*, HostPinnedSpace>("h_temperature", (block_width + 2) * (block_height + 2));
     Kokkos::deep_copy(h_temperature, d_temperature);
   }
 
   void print() {
+    copyToHost();
     CkPrintf("[%d,%d]\n", thisIndex.x, thisIndex.y);
     for (int j = 0; j < block_height + 2; j++) {
       for (int i = 0; i < block_width + 2; i++) {
