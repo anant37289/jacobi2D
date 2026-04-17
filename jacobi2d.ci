@@ -92,11 +92,15 @@ mainmodule jacobi2d {
         if (sync_ver) {
           contribute(CkCallback(CkReductionTarget(Main, commDone), main_proxy));
         } else {
-          if (my_iter < warmup_iters + n_iters) {
-            thisProxy[thisIndex].iterate();
+          if(my_iter <= warmup_iters) {
+            contribute(CkCallback(CkReductionTarget(Main, commDone), main_proxy));
           } else {
-            if (print_elements) copyToHost();
-            contribute(CkCallback(CkReductionTarget(Main, allDone), main_proxy));
+            if (my_iter < warmup_iters + n_iters) {
+              thisProxy[thisIndex].iterate();
+            } else {
+              if (print_elements) copyToHost();
+              contribute(CkCallback(CkReductionTarget(Main, allDone), main_proxy));
+            }
           }
         }
       }

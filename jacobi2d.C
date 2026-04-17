@@ -345,12 +345,12 @@ class Block : public CBase_Block {
   bool left_bound, right_bound, top_bound, bottom_bound;
 
   Block() {
-    usesAtSync = true;
+    // usesAtSync = true;
   }
 
   Block(CkMigrateMessage* m)
   {
-    usesAtSync = true;
+    // usesAtSync = true;
     hapiCheck(hapiStreamCreateWithPriority(&compute_stream, hapiStreamDefault, 0));
     hapiCheck(hapiStreamCreateWithPriority(&comm_stream, hapiStreamDefault, -1));
 
@@ -370,68 +370,68 @@ class Block : public CBase_Block {
     hapiCheck(hapiEventDestroy(comm_event));
   }
 
-  void pup(PUP::er& p) {
-    p | my_iter;
-    p | neighbors;
-    p | remote_count;
-    p | x;
-    p | y;
-    p | block_width;
-    p | block_height;
-    p | left_bound;
-    p | right_bound;
-    p | top_bound;
-    p | bottom_bound;
+  // void pup(PUP::er& p) {
+  //   p | my_iter;
+  //   p | neighbors;
+  //   p | remote_count;
+  //   p | x;
+  //   p | y;
+  //   p | block_width;
+  //   p | block_height;
+  //   p | left_bound;
+  //   p | right_bound;
+  //   p | top_bound;
+  //   p | bottom_bound;
 
-    ckout<<block_width<<","<<block_height<<endl;
+  //   ckout<<block_width<<","<<block_height<<endl;
 
-    if(p.isUnpacking())
-    {
-      h_temperature = Kokkos::View<DataType*, HostPinnedSpace>("h_temperature", (block_width + 2) * (block_height + 2));
-      d_temperature = Kokkos::View<DataType*, DeviceMemSpace>("d_temperature", (block_width + 2) * (block_height + 2));
-      d_new_temperature = Kokkos::View<DataType*, DeviceMemSpace>("d_new_temperature", (block_width + 2) * (block_height + 2));
-      h_left_ghost = Kokkos::View<DataType*, HostPinnedSpace>("h_left_ghost", block_height);
-      h_right_ghost = Kokkos::View<DataType*, HostPinnedSpace>("h_right_ghost", block_height);
-      h_top_ghost = Kokkos::View<DataType*, HostPinnedSpace>("h_top_ghost", block_width);
-      h_bottom_ghost = Kokkos::View<DataType*, HostPinnedSpace>("h_bottom_ghost", block_width);
-      if (!use_zerocopy)
-      {
-        d_left_ghost =
-            Kokkos::View<DataType*, DeviceMemSpace>("d_left_ghost", block_height);
+  //   if(p.isUnpacking())
+  //   {
+  //     h_temperature = Kokkos::View<DataType*, HostPinnedSpace>("h_temperature", (block_width + 2) * (block_height + 2));
+  //     d_temperature = Kokkos::View<DataType*, DeviceMemSpace>("d_temperature", (block_width + 2) * (block_height + 2));
+  //     d_new_temperature = Kokkos::View<DataType*, DeviceMemSpace>("d_new_temperature", (block_width + 2) * (block_height + 2));
+  //     h_left_ghost = Kokkos::View<DataType*, HostPinnedSpace>("h_left_ghost", block_height);
+  //     h_right_ghost = Kokkos::View<DataType*, HostPinnedSpace>("h_right_ghost", block_height);
+  //     h_top_ghost = Kokkos::View<DataType*, HostPinnedSpace>("h_top_ghost", block_width);
+  //     h_bottom_ghost = Kokkos::View<DataType*, HostPinnedSpace>("h_bottom_ghost", block_width);
+  //     if (!use_zerocopy)
+  //     {
+  //       d_left_ghost =
+  //           Kokkos::View<DataType*, DeviceMemSpace>("d_left_ghost", block_height);
 
-        d_right_ghost =
-            Kokkos::View<DataType*, DeviceMemSpace>("d_right_ghost", block_height);
-      }
-      else
-      {
-        d_send_left_ghost =
-            Kokkos::View<DataType*, DeviceMemSpace>("d_send_left_ghost", block_height);
+  //       d_right_ghost =
+  //           Kokkos::View<DataType*, DeviceMemSpace>("d_right_ghost", block_height);
+  //     }
+  //     else
+  //     {
+  //       d_send_left_ghost =
+  //           Kokkos::View<DataType*, DeviceMemSpace>("d_send_left_ghost", block_height);
 
-        d_send_right_ghost =
-            Kokkos::View<DataType*, DeviceMemSpace>("d_send_right_ghost", block_height);
+  //       d_send_right_ghost =
+  //           Kokkos::View<DataType*, DeviceMemSpace>("d_send_right_ghost", block_height);
 
-        d_send_top_ghost =
-            Kokkos::View<DataType*, DeviceMemSpace>("d_send_top_ghost", block_width);
+  //       d_send_top_ghost =
+  //           Kokkos::View<DataType*, DeviceMemSpace>("d_send_top_ghost", block_width);
 
-        d_send_bottom_ghost =
-            Kokkos::View<DataType*, DeviceMemSpace>("d_send_bottom_ghost", block_width);
+  //       d_send_bottom_ghost =
+  //           Kokkos::View<DataType*, DeviceMemSpace>("d_send_bottom_ghost", block_width);
 
-        d_recv_left_ghost =
-            Kokkos::View<DataType*, DeviceMemSpace>("d_recv_left_ghost", block_height);
+  //       d_recv_left_ghost =
+  //           Kokkos::View<DataType*, DeviceMemSpace>("d_recv_left_ghost", block_height);
 
-        d_recv_right_ghost =
-            Kokkos::View<DataType*, DeviceMemSpace>("d_recv_right_ghost", block_height);
+  //       d_recv_right_ghost =
+  //           Kokkos::View<DataType*, DeviceMemSpace>("d_recv_right_ghost", block_height);
 
-        d_recv_top_ghost =
-            Kokkos::View<DataType*, DeviceMemSpace>("d_recv_top_ghost", block_width);
+  //       d_recv_top_ghost =
+  //           Kokkos::View<DataType*, DeviceMemSpace>("d_recv_top_ghost", block_width);
 
-        d_recv_bottom_ghost =
-            Kokkos::View<DataType*, DeviceMemSpace>("d_recv_bottom_ghost", block_width);
-      }
-    }
-    p(d_temperature.data(), (block_width + 2) * (block_height + 2), PUP::PUPMode::DEVICE);
-    p(d_new_temperature.data(), (block_width + 2) * (block_height + 2), PUP::PUPMode::DEVICE);
-  }
+  //       d_recv_bottom_ghost =
+  //           Kokkos::View<DataType*, DeviceMemSpace>("d_recv_bottom_ghost", block_width);
+  //     }
+  //   }
+  //   p(d_temperature.data(), (block_width + 2) * (block_height + 2), PUP::PUPMode::DEVICE);
+  //   p(d_new_temperature.data(), (block_width + 2) * (block_height + 2), PUP::PUPMode::DEVICE);
+  // }
 
   void init() {
     // Initialize values
@@ -565,13 +565,7 @@ class Block : public CBase_Block {
 
 
   void iterate() {
-    if (my_iter != 0 && my_iter % 10 == 0) {
-      cudaStreamSynchronize(comm_stream);
-      cudaStreamSynchronize(compute_stream);
-      AtSync();
-    } else {
-      thisProxy[thisIndex].exchangeGhosts();
-    }
+    thisProxy[thisIndex].exchangeGhosts();
   }
 
   void ResumeFromSync() {
@@ -766,7 +760,7 @@ class Block : public CBase_Block {
         memcpy(h_left_ghost.data(), gh, size * sizeof(DataType));
         Kokkos::deep_copy(comm_space, d_left_ghost, h_left_ghost);
 #if !COMM_ONLY
-        invokeUnpackingKernel(d_temperature, d_left_ghost, true, block_width,
+invokeUnpackingKernel(d_temperature, d_left_ghost, true, block_width,
             block_height, comm_space);
 #endif
         thisProxy[thisIndex].d_send_left_ghost_done();
@@ -815,6 +809,7 @@ class Block : public CBase_Block {
   }
 
   void print() {
+    copyToHost();
     CkPrintf("[%d,%d]\n", thisIndex.x, thisIndex.y);
     for (int j = 0; j < block_height + 2; j++) {
       for (int i = 0; i < block_width + 2; i++) {
@@ -827,15 +822,15 @@ class Block : public CBase_Block {
       CkPrintf("\n");
     }
 
-    if (!(thisIndex.x == n_chares_x-1 && thisIndex.y == n_chares_y-1)) {
-      if (thisIndex.x == n_chares_x-1) {
-        thisProxy(0,thisIndex.y+1).print();
-      } else {
-        thisProxy(thisIndex.x+1,thisIndex.y).print();
-      }
-    } else {
-      main_proxy.printDone();
-    }
+    main_proxy.printDone();
+    // if (!(thisIndex.x == n_chares_x-1 && thisIndex.y == n_chares_y-1)) {
+    //   if (thisIndex.x == n_chares_x-1) {
+    //     thisProxy(0,thisIndex.y+1).print();
+    //   } else {
+    //     thisProxy(thisIndex.x+1,thisIndex.y).print();
+    //   }
+    // } else {
+    // }
   }
 };
 
