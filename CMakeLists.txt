@@ -3,6 +3,13 @@ project(jacobi2d)
 
 include(${CMAKE_SOURCE_DIR}/config.cmk)
 
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Debug CACHE STRING "Build type" FORCE)
+endif()
+
+message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
+set(CMAKE_CXX_FLAGS_DEBUG "-g -O0")
+
 set(Kokkos_ROOT ${KOKKOS_DIR})
 find_package(Kokkos 4.5 REQUIRED CONFIG)
 
@@ -44,13 +51,14 @@ if(Charm_ENABLE_GPU)
     add_custom_command(
         OUTPUT "${CMAKE_BINARY_DIR}/jacobi2d.out"
         COMMAND ${CHARMC} $<TARGET_OBJECTS:jacobi2d> ${GPU_LINK_OPTS} -o ${CMAKE_BINARY_DIR}/jacobi2d.out
-        DEPENDS jacobi2d
+        DEPENDS $<TARGET_OBJECTS:jacobi2d>
         COMMENT "Linking charm build against kokkos and cuda"
     )
 
     add_custom_target(result ALL
         DEPENDS "${CMAKE_BINARY_DIR}/jacobi2d.out"
     )
+    add_dependencies(result jacobi2d)
 else()
     add_executable(jacobi2d.out ${CMAKE_SOURCE_DIR}/jacobi2d.C ${CMAKE_SOURCE_DIR}/jacobi2d.decl.h)
     target_include_directories(jacobi2d.out PRIVATE ${CHARM_DIR}/include)

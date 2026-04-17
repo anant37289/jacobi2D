@@ -2,9 +2,9 @@
 
 # Configuration
 GPUS_PER_NODE=4
-BASE_W=16384
-BASE_H=16384
-MAX_GPUS=16
+BASE_W=131072
+BASE_H=131072
+MAX_GPUS=32
 
 # Parse arguments
 usage() {
@@ -55,12 +55,12 @@ echo "GPUs/Node: $GPUS_PER_NODE"
 echo "Max GPUs: $MAX_GPUS"
 
 # Lists of Overdecomposition Factors and PPN configurations to test
-ODF_LIST=(1 4 8 16)
+ODF_LIST=(1 2 4 8 16)
 # PPN logic will be handled inside:
 # We want to test PPN = (NumChares/GPU), 1, or (NumChares/GPU)/2.
 # Note: PPN must be integer.
 
-current_gpus=1
+current_gpus=4
 current_w=$BASE_W
 current_h=$BASE_H
 
@@ -86,22 +86,20 @@ while [ $current_gpus -le $MAX_GPUS ]; do
         
         # Calculate PPN candidates
         ppn_list=()
-        
-        # 1. PPN = 1
-        ppn_list+=(1)
-
-        # 2. PPN = NumChares/GPU = ODF
-        if [ $odf -ne 1 ]; then
-            ppn_list+=($odf)
-        fi
-
-        # 3. PPN = (NumChares/GPU)/2 = ODF/2
-        if [ $odf -ge 2 ]; then
-            ppn_half=$((odf / 2))
-            if [ $ppn_half -ne 1 ] && [ $ppn_half -ne $odf ]; then
-                 ppn_list+=($ppn_half)
+        p=$odf
+        while true; do
+            ppn_list+=( "$p" )
+            # stop if we've reached 1
+            if [ "$p" -eq 1 ]; then
+                break
             fi
-        fi
+            # if p is odd, dividing by 2 would not be integer -> stop
+            if [ $(( p % 2 )) -ne 0 ]; then
+                break
+            fi
+            # else perfectly divisible by 2, continue
+            p=$(( p / 2 ))
+        done
 
         for ppn in "${ppn_list[@]}"; do
             echo "  Launching: N=$N (ODF=$odf), PPN=$ppn"
@@ -114,10 +112,10 @@ while [ $current_gpus -le $MAX_GPUS ]; do
             export PPN=$ppn
             export ODF=$odf
 
-            CMD="sbatch --nodes=$NODES --ntasks-per-node=$TASKS_PER_NODE --gpus-per-node=$TASKS_PER_NODE --time=00:10:00 experiment_job.slurm"
+            CMD="sbatch --nodes=$NODES --ntasks-per-node=$TASKS_PER_NODE --cpus-per-task=16  --partition=gpuA40x4 --account=mzu-delta-gpu --gpus-per-node=$TASKS_PER_NODE --time=00:10:00 experiment_job.slurm"
             
             if [ "$DRY_RUN" = true ]; then
-                echo "    [DRY-RUN] $CMD (Env: NP=$NP W=$W H=$H N=$N PPN=$PPN)"
+                echo "    [DRY-RUN] $CMD (Env: NP=$NP W=$W H=$H N=$N PE=$((NP * PPN)))"
             else
                 $CMD
             fi
@@ -126,7 +124,7 @@ while [ $current_gpus -le $MAX_GPUS ]; do
 
     # Prepare for next step
     current_gpus=$((current_gpus * 2))
-    
+
     # Alternating dimension scaling logic
     # 1 -> 2: Scale one dim (e.g. W)
     # 2 -> 4: Scale other dim (e.g. H)
@@ -141,9 +139,9 @@ while [ $current_gpus -le $MAX_GPUS ]; do
     # If we just multiplied Gpus by 2, we need to multiply *one* dimension by 2 to keep work/gpu constant.
     # To alternate, we can check which is smaller or just flip a flag.
     # Since we start square, let's double W first.
-    if [ $current_w -le $current_h ]; then
-        current_w=$((current_w * 2))
-    else
-        current_h=$((current_h * 2))
-    fi
+    # if [ $current_w -le $current_h ]; then
+    #     current_w=$((current_w * 2))
+    # else
+    #     current_h=$((current_h * 2))
+    # fi
 done
