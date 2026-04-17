@@ -822,15 +822,15 @@ invokeUnpackingKernel(d_temperature, d_left_ghost, true, block_width,
       CkPrintf("\n");
     }
 
-    main_proxy.printDone();
-    // if (!(thisIndex.x == n_chares_x-1 && thisIndex.y == n_chares_y-1)) {
-    //   if (thisIndex.x == n_chares_x-1) {
-    //     thisProxy(0,thisIndex.y+1).print();
-    //   } else {
-    //     thisProxy(thisIndex.x+1,thisIndex.y).print();
-    //   }
-    // } else {
-    // }
+    if (!(thisIndex.x == n_chares_x-1 && thisIndex.y == n_chares_y-1)) {
+      if (thisIndex.x == n_chares_x-1) {
+        thisProxy(0,thisIndex.y+1).print();
+      } else {
+        thisProxy(thisIndex.x+1,thisIndex.y).print();
+      }
+    } else {
+      main_proxy.printDone();
+    }
   }
 };
 
