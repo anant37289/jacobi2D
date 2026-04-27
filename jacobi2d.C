@@ -45,7 +45,7 @@ public:
     {
         #ifdef GPU_BACKEND
         int device;
-        hapiCheck(cudaGetDevice(&device));
+        hapiCheck(hapiGetDevice(&device));
         Kokkos::InitializationSettings args_kokkos;
         args_kokkos.set_device_id(device);
         Kokkos::initialize(args_kokkos);
